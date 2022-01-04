@@ -2,7 +2,7 @@
 
 @push('styles')
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="{{ secure_asset('css/login.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/login.css') }}" rel="stylesheet">
 @endpush
 
 @section('content')
@@ -37,7 +37,7 @@
     <div class="container my-5">
         <div class="row no-gutters">
             <div class="image col-lg-6 d-flex justify-content-center py-5">
-                <img src="https://upload.wikimedia.org/wikipedia/en/thumb/c/c6/New_Era_University.svg/1200px-New_Era_University.svg.png" alt="" class="img-fluid my-5 ">
+                <img src="{{ asset('/storage//logo.png') }}" alt="" class="img-fluid my-5 ">
             </div>
             <div class="welcome col-lg-6 px-5 pt-5 mt-2">
                 <div class="d-flex flex-column">
