@@ -1,0 +1,76 @@
+*{
+    padding:0;
+    margin:0;
+    box-sizing:border-box;
+}
+body{
+    background-color: rgb(219, 226, 226);
+    background-image: url(https://media-exp1.licdn.com/dms/image/C561BAQGUxB_pssZkJA/company-background_10000/0/1591598520082?e=2159024400&v=beta&t=ZBbCTQxKfeKlkXkME-zXjM_UuW7V9WhAfAh6WOSfWWQ);
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+.row{
+    background:white;
+    border-radius:20px;
+    margin-top: 70px;
+}
+img{
+    height: 50%;
+    width: 50%;
+}
+.image{
+    background: #0C70CC;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+}
+.header{
+    font-family: 'Playfair Display', serif;
+    font-weight: bold;
+}
+a{
+    font-size:11px;
+}
+
+@media only screen and (max-width: 1050px) {
+    body{
+        height: 100vh;
+    }
+    img{
+        width: 20vw;
+    }
+
+    .image > img{
+        margin-bottom: 1rem !important;
+        margin-top: 1rem !important;
+    }
+    .image{
+        padding-top: 0px !important;
+        padding-bottom: 0px !important;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        border-bottom-left-radius: 0px;
+    }
+
+    h2{
+        font-size: 1rem;
+    }
+    small, a{
+        font-size: .4rem;
+    }
+
+    a.align-self-center{
+        align-self: start !important;
+    }
+
+    .welcome{
+        padding-top: .1rem !important;
+    }
+
+    section.ml-5, section.mx-5{
+        margin-left: .1rem !important;
+    }
+    
+    section.mr-5, section.mx-5{
+        margin-right: .1rem !important;
+    }
+}
