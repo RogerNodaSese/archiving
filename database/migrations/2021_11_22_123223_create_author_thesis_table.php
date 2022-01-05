@@ -14,8 +14,8 @@ class CreateAuthorThesisTable extends Migration
     public function up()
     {
         Schema::create('author_thesis', function (Blueprint $table) {
-            $table->foreignId('author_id')->constrained('authors');
-            $table->foreignId('thesis_id')->constrained('theses');
+            $table->foreignId('author_id')->constrained('authors')->onDelete('cascade');
+            $table->foreignId('thesis_id')->constrained('theses')->onDelete('cascade');
         });
     }
 

@@ -40,4 +40,19 @@ class Thesis extends Model
     {
         return $this->belongsTo(Program::class, 'program_id', 'id');
     }
+
+    public static function boot(){
+        parent::boot();
+        self::deleting(function($thesis){
+            $thesis->authors()->each(function($author){
+                $author->delete();
+            });
+            $thesis->keywords()->each(function($keyword){
+                $keyword->delete();
+            });
+            $thesis->subjects()->each(function($subject){
+                $subject->delete();
+            });
+        });
+    }
 }

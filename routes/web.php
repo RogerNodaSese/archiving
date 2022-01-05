@@ -132,6 +132,12 @@ Route::group(['middleware' => ['auth','verified']], function(){
             $thesis->save();
             return back()->with('message', 'Thesis verified');
         })->name('requests.create');
+
+        Route::delete('archive-request/{id}', function($id){
+            $thesis = \App\Models\Thesis::find($id);
+            $thesis->delete();
+            return back()->with('deleted', 'Request declined!'); 
+        })->name('requests.delete');
     });
     //Route for Super-admin and Admin
     Route::group(['middleware' => 'role:superadmin,admin'], function(){

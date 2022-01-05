@@ -25,9 +25,13 @@
             <td class="font-weight-normal"> {{$thesis->program->description}} </td>
             <td class="p-1"> <a href="{{route('library.request.view', [$thesis->id])}}" class="btn btn-primary"> View </a> </td>
             <td class="p-1"> <a href="{{ route('library.requests.create', [$thesis->id]) }}" onclick="event.preventDefault(); document.getElementById('submit-form{{$thesis->id}}').submit()" class="btn btn-success"> Verify </button> </td>
-            <td class="p-1"> <button class="btn btn-danger"> Decline </button> </td>
+            <td class="p-1"> <a href="{{ route('library.requests.delete', [$thesis->id]) }}" onclick="event.preventDefault(); document.getElementById('delete-form{{$thesis->id}}').submit()" class="btn btn-danger"> Decline </a> </td>
         </tr>
         <form id="submit-form{{$thesis->id}}" action="{{ route('library.requests.create', [$thesis->id]) }}" method="post" class="invisible">
+            @csrf   
+        </form>
+        <form id="delete-form{{$thesis->id}}" action="{{ route('library.requests.delete', [$thesis->id]) }}" method="post" class="invisible">
+            @method('delete')
             @csrf
         </form>
     @empty
@@ -67,6 +71,27 @@
                     title: '{{session("message")}}',
                 })
     </script>
+    @endpush
+@elseif(session('deleted'))
+@push('scripts')
+<script>
+    const Toast = Swal.mixin({
+       toast: true,
+       position: 'top-end',
+       showConfirmButton: false,
+       timer: 4000,
+       timerProgressBar: true,
+       didOpen: (toast) => {
+           toast.addEventListener('mouseenter', Swal.stopTimer)
+           toast.addEventListener('mouseleave', Swal.resumeTimer)
+       }
+   })
+   
+           Toast.fire({
+               icon: 'error',
+               title: '{{session("deleted")}}',
+           })
+</script>
 
 @endpush
 @endif
