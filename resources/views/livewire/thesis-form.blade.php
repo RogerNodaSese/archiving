@@ -135,6 +135,15 @@
             </div>
           </div>
           <div class="form-group row mb-2">
+            <label for="inputPassword" class="col-sm-2 col-form-label">Suggested citation</label>
+            <div class="col-sm-8 mb-2">
+              <textarea class="form-control @error('citation') border border-danger @enderror" rows="3" wire:model.lazy="citation" name="citation" id="inputPassword"></textarea>
+              @error('citation')
+                  <small class="text-danger">{{ $message }}</small>
+              @enderror
+            </div>
+          </div>
+          <div class="form-group row mb-2">
             <label for="inputPassword" class="col-sm-2 col-form-label">Abstract</label>
             <div class="col-sm-8 mb-2">
               <textarea class="form-control @error('abstract') border border-danger @enderror" rows="5" wire:model.lazy="abstract" name="abstract" id="inputPassword"></textarea>

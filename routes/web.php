@@ -42,7 +42,7 @@ Route::get('/email/verify/{id}/{hash}', [RegisterController::class, 'emailVerifi
 
 Route::get('/resend-verification', function(){
     return view('auth.resend-verification');
-})->middleware(['throttle:verification','guest']);
+})->middleware(['throttle:verification','guest'])->name('resend');
 
 
 Route::group(['middleware' => ['auth','verified']], function(){
@@ -100,14 +100,15 @@ Route::group(['middleware' => ['auth','verified']], function(){
     });
 
     Route::group(['middleware' => 'role:superadmin', 'as' => 'library.'], function(){
-        Route::get('/users', [LibraryController::class, 'userList'])->name('users');
+        Route::get('/user', [LibraryController::class, 'userList'])->name('users');
+        Route::get('/user/create', [LibraryController::class, 'userCreate'])->name('users.create');
         Route::get('/college/create', function(){
             return view('library.form.college');
         })->name('college.create');
         Route::get('/archive-requests', function(){
             $theses = \App\Models\Thesis::with(['program' => function($query){
                 $query->with('college');
-            }])->where('verified', false)->get();
+            }, 'authors'])->where('verified', false)->get();
         
             return view('library.thesis-verification', compact('theses'));
         })->name('requests');
@@ -130,13 +131,13 @@ Route::group(['middleware' => ['auth','verified']], function(){
             $thesis = \App\Models\Thesis::find($id);
             $thesis->verified = true;
             $thesis->save();
-            return back()->with('message', 'Thesis verified');
+            return back();
         })->name('requests.create');
 
         Route::delete('archive-request/{id}', function($id){
             $thesis = \App\Models\Thesis::find($id);
             $thesis->delete();
-            return back()->with('deleted', 'Request declined!'); 
+            return back(); 
         })->name('requests.delete');
     });
     //Route for Super-admin and Admin
@@ -149,7 +150,6 @@ Route::group(['middleware' => ['auth','verified']], function(){
         })->name('program.create');
     });
 });
-
 
 // Route::get('/student/dashboard', [StudentController::class, 'index'])->name('student.dashboard');
 

@@ -27,9 +27,9 @@
                         <a href="{{route('program.create')}}" class="btn btn-success" id="inputPassword">+ Add Programs</a>
                     @endif
                 @endif
-                @if (auth()->user()->role_id == \App\Models\Role::SUPER_ADMIN || auth()->user()->role_id == \App\Models\Role::ADMIN)
+                @if (auth()->user()->role_id == \App\Models\Role::SUPER_ADMIN)
                     @if(\Request::routeIs('library.users'))
-                <a href="#" class="btn btn-success" id="inputPassword">+ Add users</a>
+                <a href="{{route('library.users.create')}}" class="btn btn-success" id="inputPassword">+ Add admin</a>
                     @endif
                 @endif
             </div>

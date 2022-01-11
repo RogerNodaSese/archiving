@@ -3,22 +3,20 @@
 @push('styles')
     @livewireStyles
 @endpush
-
 @section('header')
-    <h2 class="display-5 col-md-9 col-lg-9">Create archive</h2>
+    <h2 class="display-5 col-md-9 col-lg-9">Create admin</h2>
 @endsection
 
 @section('breadcrumbs')
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="/archives">Archives</a></li>
+      <li class="breadcrumb-item"><a href="{{route('library.users')}}">User</a></li>
       <li class="breadcrumb-item active" aria-current="page">Create</li>
     </ol>
 </nav>
 @endsection
-
 @section('contents')
-    <livewire:thesis-form/>
+    <livewire:user-account>
 @endsection
 
 @push('scripts')
@@ -26,8 +24,7 @@
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @endpush
 
-{{-- @if (session('message')) --}}
-    @push('scripts')
+@push('scripts')
     <script>
         const Toast = Swal.mixin({
             toast: true,
@@ -49,6 +46,3 @@
            })
 </script> 
     @endpush
-{{-- @endif --}}
-
-

@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Carbon\Carbon;
+use App\Rules\WordCount;
 use Illuminate\Support\Str;
 use App\Classes\Date;
 use App\Models\College;
@@ -14,6 +15,7 @@ use App\Models\Thesis;
 use App\Models\Keyword;
 use App\Models\Subject;
 use App\Models\Author;
+use Illuminate\Support\Facades\DB;
 
 class ThesisForm extends Component
 {
@@ -33,10 +35,12 @@ class ThesisForm extends Component
     public $program;
     public $subject;
     public $keyword;
+    public $citation;
     public $abstract;
     public $file;
 
-    protected $rules = [
+    protected function rules(){ 
+        return [
         'authors.*.lastname'    => 'required',
         'authors.*.firstname'   => 'required',
         'title'                 => 'required|unique:theses',
@@ -47,9 +51,11 @@ class ThesisForm extends Component
         'program'               => 'required',
         'subject'               => 'required',
         'keyword'               => 'required',
-        'abstract'              => 'required',
-        'file'                  => 'nullable|file|mimes:pdf'
-    ];
+        'citation'              => ['required', new WordCount(15)],
+        'abstract'              => ['required', new WordCount(150)],
+        'file'                  => 'nullable|file|mimes:pdf',
+        ];
+    }
 
     protected $messages = [
         'authors.*.firstname.required'  => 'Firstname required',
@@ -138,11 +144,12 @@ class ThesisForm extends Component
 
         $keywords = explode(',' , $this->keyword);
         $subjects = explode(',' , $this->subject);
-
+        DB::transaction(function () use($keywords, $subjects) {
         $thesis = Thesis::create([
             'user_id'       => \Illuminate\Support\Facades\Auth::id(),
             'title'         => $this->title,
             'date_of_issue' => \Carbon\Carbon::createFromDate($this->year, $this->month, $this->day),
+            'citation'      => $this->citation,
             'abstract'      => $this->abstract,
             'program_id'    => $this->program
         ]);
@@ -173,6 +180,7 @@ class ThesisForm extends Component
             $subject->description = Str::of($data)->trim();
             $thesis->subjects()->save($subject);
         }
+        },3);
 
         // $thesis->publisher = "HEY";
 
@@ -203,7 +211,14 @@ class ThesisForm extends Component
 
     public function resetForm()
     {
-        $this->reset(['authors','title','college','month','day','year','subject','program','keyword','abstract','file']);
+        
+        if(auth()->user()->isAdministrator())
+        {
+            $this->reset(['authors','title','month','day','year','subject','program','keyword','citation','abstract','file']);
+        }else
+        {
+            $this->reset(['authors','title','month','college','day','year','subject','program','citation','keyword','abstract','file']);
+        }
         $this->authors = [
             ['lastname' => '' , 'firstname' => ''],
         ];

@@ -91,6 +91,12 @@
             </h4>
         </div>
         <div class="d-flex flex-column mt-4">
+            <label class="col-4 col-lg-2" for="abs">Suggested citation:</label>
+            <div class="col-12 col-lg-12">
+                    <p class="lead text-justify" id="abs">{{$thesis->citation}}</p>           
+            </div>
+        </div>
+        <div class="d-flex flex-column mt-4">
             <label class="col-4 col-lg-2" for="abs">Abstract:</label>
             <div class="col-12 col-lg-12">
                     <p class="lead text-justify" id="abs">{{$thesis->abstract}}</p>           

@@ -29,4 +29,9 @@ class LibraryController extends Controller
     {
         return view('library.users');
     }
+
+    public function userCreate()
+    {
+        return view('library.form.college-acc');
+    }
 }

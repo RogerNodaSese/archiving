@@ -19,6 +19,7 @@ class CreateThesesTable extends Migration
             $table->string('title');
             $table->date('date_of_issue');
             $table->string('publisher')->default('New Era University');
+            $table->text('citation');
             $table->text('abstract');
             $table->boolean('verified')->default(0);
             $table->foreignId('file_id')->nullable()->constrained('files');

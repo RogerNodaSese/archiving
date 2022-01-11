@@ -15,7 +15,8 @@ class CollegeController extends Controller
     public function index()
     {
         $college = User::find(Auth::id())->college->firstOrFail();
-        return view('college.dashboard',compact('college'));
+        $programCount = Program::whereRelation('college', 'id', auth()->user()->college_id)->count();
+        return view('college.dashboard',compact('college','programCount'));
     }
 
     public function collegeArchives($slug)

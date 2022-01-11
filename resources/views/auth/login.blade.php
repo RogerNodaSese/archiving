@@ -59,6 +59,7 @@
                     </div>
                     <div class="col-lg-5 d-flex flex-column">
                         <a href="{{ route('register') }}" class="d-flex align-self-center">Click here to sign up</a>
+                        <a href="{{ route('resend') }}" class="d-flex align-self-center">Re-send verification.</a>
                     </div>
                     <div class="form-row">
                         <div class="col-lg-11">

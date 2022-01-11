@@ -18,7 +18,8 @@ class Thesis extends Model
         'title',
         'date_of_issue',
         'abstract',
-        'program_id'
+        'program_id',
+        'citation'
     ];
 
     public function keywords()

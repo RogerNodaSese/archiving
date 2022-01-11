@@ -12,12 +12,14 @@
   </nav>
 @endsection
 @section('contents')
-    @foreach ($college->programs as $program)
+    @forelse ($college->programs as $program)
     <x-card>
         <x-card.image src="https://image.freepik.com/free-photo/hand-painted-watercolor-background-with-sky-clouds-shape_24972-1095.jpg"></x-card.image>
         <x-card.body>
             <x-card.text class="text-center"><a class="text-dark" href="{{ '/archives'.'/'.$college->slug.'/'.$program->slug }}">{{ $program->description }}</a></x-card.text>
         </x-card.body>
     </x-card>
-    @endforeach
+    @empty
+      <h1 class="display-4 mt-3">No programs found!</h1>
+    @endforelse
 @endsection

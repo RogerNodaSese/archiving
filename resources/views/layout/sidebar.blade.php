@@ -50,6 +50,13 @@
                         move_to_inbox
                     </span>
                     <small>Archive Requests</small>
+                    {{-- only thesis to query --}}
+                    @php
+                        $requestCount = \App\Models\Thesis::where('verified', false)->count();
+                    @endphp
+                    @if($requestCount > 0)
+                    <span class="badge badge-dark"> {{$requestCount}} </span>  
+                    @endif
                 </a>
             </li>
 @endif
