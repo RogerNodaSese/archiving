@@ -12,6 +12,6 @@ class Keyword extends Model
 
     public function theses()
     {
-        return $this->belongsToMany(Thesis::class, 'keyword_thesis', 'thesis_id', 'keyword_id');
+        return $this->belongsToMany(Thesis::class, 'keyword_thesis', 'keyword_id', 'thesis_id');
     }
 }

@@ -28,7 +28,7 @@
                 <tr>
                     <th scope="row">{{$loop->iteration}}</th>
                     <td><a href="{{route('student.keyword', [$keyword->description])}}">{{$keyword->description}}</a></td>
-                    <td>{{$keyword->total}}</td>
+                    <td>{{$keyword->theses_count}}</td>
                 </tr>
         @empty
         <tr>

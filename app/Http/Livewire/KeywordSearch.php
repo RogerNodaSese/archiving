@@ -22,10 +22,11 @@ class KeywordSearch extends Component
     
     public function render()
     {
+        
        
         return view('livewire.keyword-search',
         [
-            'keywords' => Keyword::select('description',DB::raw('COUNT(*) as total'))->leftJoin('keyword_thesis', 'keywords.id', '=', 'keyword_thesis.keyword_id')->leftJoin('theses', 'theses.id', '=', 'keyword_thesis.thesis_id')->where('theses.verified', true)->where('description', 'LIKE', '%'.$this->search.'%')->groupBy('description')->paginate(5)
+            'keywords' => Keyword::whereRelation('theses', 'verified', true)->withCount('theses')->paginate(5)
         ]);
     }
 }

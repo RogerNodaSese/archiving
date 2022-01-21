@@ -7,12 +7,14 @@
     "require": {
         "php": "^7.3|^8.0",
         "fruitcake/laravel-cors": "^2.0",
+        "google/apiclient": "^2.12",
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.54",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
         "laravel/ui": "^3.3",
-        "livewire/livewire": "^2.7"
+        "livewire/livewire": "^2.7",
+        "nao-pon/flysystem-google-drive": "~1.1"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.6",

@@ -16,6 +16,7 @@ use App\Models\Keyword;
 use App\Models\Subject;
 use App\Models\Author;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class ThesisForm extends Component
 {
@@ -38,11 +39,13 @@ class ThesisForm extends Component
     public $citation;
     public $abstract;
     public $file;
+    private $keyId;
+    private $subId;
 
     protected function rules(){ 
         return [
-        'authors.*.lastname'    => 'required',
-        'authors.*.firstname'   => 'required',
+        'authors.*.lastname'    => 'required|regex:/^[a-zA-Z\s]*$/',
+        'authors.*.firstname'   => 'required|regex:/^[a-zA-Z\s]*$/',
         'title'                 => 'required|unique:theses',
         'day'                   => 'required',
         'month'                 => 'required',
@@ -60,6 +63,7 @@ class ThesisForm extends Component
     protected $messages = [
         'authors.*.firstname.required'  => 'Firstname required',
         'authors.*.lastname.required'   => 'Lastname required',
+        'regex'                         => 'Only (A-Z a-z) characters',
         'title.required'                => 'Title required',
         'day.required'                  => 'Day required',
         'month.required'                => 'Month required',
@@ -133,7 +137,10 @@ class ThesisForm extends Component
     }
 
     public function addThesis()
-    {    
+    {   
+        $this->fileDirectory();
+        // Storage::disk('google')->makeDirectory('archives');
+        // $this->file->store('','google');
         if($this->validateUserSubmission())
         {
             return redirect()->route('thesis.create')->with('message', 'Request Error');
@@ -141,7 +148,8 @@ class ThesisForm extends Component
         //Validate data
         sleep(1);
         $this->validate();
-
+        $this->keyId = [];
+        $this->subId = [];
         $keywords = explode(',' , $this->keyword);
         $subjects = explode(',' , $this->subject);
         DB::transaction(function () use($keywords, $subjects) {
@@ -162,10 +170,20 @@ class ThesisForm extends Component
 
         foreach($keywords as $data)
         {
-            $keyword = new Keyword();
-            $keyword->description = Str::of($data)->trim();
-            $thesis->keywords()->save($keyword);
+            $keyResult = Keyword::where('description', '=', Str::of($data)->trim())->first();
+            if(is_null($keyResult))
+            {
+                $keyword = new Keyword();
+                $keyword->description = Str::of($data)->trim();
+                $thesis->keywords()->save($keyword);
+                array_push($this->keyId, $keyword->id);
+            }else
+            {
+                array_push($this->keyId, $keyResult->id);
+            }
         }
+
+        $thesis->keywords()->sync($this->keyId);
 
         foreach($this->authors as $data)
         {
@@ -176,10 +194,20 @@ class ThesisForm extends Component
         }
 
         foreach ($subjects as $data) {
-            $subject = new Subject();
-            $subject->description = Str::of($data)->trim();
-            $thesis->subjects()->save($subject);
+
+            $subResult = Subject::where('description', '=', Str::of($data)->trim())->first();
+            if(is_null($subResult))
+            {
+                $subject = new Subject();
+                $subject->description = Str::of($data)->trim();
+                $thesis->subjects()->save($subject);
+                array_push($this->subId, $subject->id);
+            }else
+            {
+                array_push($this->subId, $subResult->id);
+            }
         }
+        $thesis->subjects()->sync($this->subId);
         },3);
 
         // $thesis->publisher = "HEY";
@@ -209,6 +237,13 @@ class ThesisForm extends Component
     //     $this->keyword = $slug;
     // }
 
+    private function fileDirectory()
+    {
+        $storage = Storage::disk('google');
+        
+        $path = \App\Models\Directory::where('college_id', $this->college)->first()->path;
+        $this->file->storeAs($path,Str::slug($this->title, '-'),'google');
+    }
     public function resetForm()
     {
         

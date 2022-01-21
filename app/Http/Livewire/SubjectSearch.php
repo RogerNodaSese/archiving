@@ -24,7 +24,7 @@ class SubjectSearch extends Component
     {
         return view('livewire.subject-search', 
         [
-            'subjects' => Subject::select('description', DB::raw('count(*) as total'))->orWhere('description', 'LIKE', '%'.$this->search.'%')->groupBy('description')->paginate(5)
+            'subjects' => Subject::whereRelation('theses', 'verified', true)->withCount('theses')->paginate(5)
         ]);
     }
 }
