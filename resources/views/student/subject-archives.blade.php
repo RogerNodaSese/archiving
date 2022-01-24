@@ -1,7 +1,7 @@
 @extends('layout.dashboard')
 
 @section('header')
-<h2 class="display-5 col-md-10 col-lg-10">Thesis Archives</h2>
+<h2 class="display-5 col-md-10 col-lg-10">You've searched for {{\Str::ucfirst($slug)}}</h2>
 @endsection
 
 @section('breadcrumbs')
