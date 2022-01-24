@@ -78,16 +78,18 @@ Route::group(['middleware' => ['auth','verified']], function(){
         Route::get('/{slug}', [CollegeController::class, 'collegeArchives'])->name('college');
         Route::get('/{slug}/{program}',[CollegeController::class, 'programArchive'])->name('program');
         Route::get('/{slug}/{program}/{archive}', function($slug,$program,$archive){
-            $thesis = \App\Models\Thesis::with(['authors','keywords','subjects'])->where('verified',true)->findOrFail($archive);
+            $thesis = \App\Models\Thesis::with(['authors','keywords','subjects','file'])->where('verified',true)->findOrFail($archive);
             $college = \App\Models\College::where('slug',$slug)->firstOrFail();
             $program = \App\Models\Program::where('slug',$program)->firstOrFail();
             $dateFormatted = \Carbon\Carbon::createFromFormat('Y-m-d', $thesis->date_of_issue );
+            $file_size = \Illuminate\Support\Facades\Storage::disk('google')->size($thesis->file->path);
+            $kb = round($file_size / 1024);
             $date = [
                 'month' => $dateFormatted->format('F'),
                 'day' => $dateFormatted->format('d'),
                 'year' => $dateFormatted->format('Y'),
             ];
-            return view('student.archive',compact('college','program','thesis','date'));
+            return view('student.archive',compact('college','program','thesis','date'))->with('kb', $kb);
         })->name('archive');
     });
     //Routes for Admin
@@ -135,13 +137,35 @@ Route::group(['middleware' => ['auth','verified']], function(){
         })->name('requests.create');
 
         Route::delete('archive-request/{id}', function($id){
-            $thesis = \App\Models\Thesis::find($id);
+            $thesis = \App\Models\Thesis::with('file')->find($id);
             $thesis->delete();
-            return back(); 
+            \Illuminate\Support\Facades\Storage::disk('google')->delete($thesis->file->path);
+            return redirect('/archive-requests')->with('deleted', 'Request deleted!'); 
         })->name('requests.delete');
     });
     //Route for Super-admin and Admin
     Route::group(['middleware' => 'role:superadmin,admin'], function(){
+        Route::get('/file/{id}/', function($id){
+            $thesis = \App\Models\Thesis::with('file','program')->findOrFail($id);
+            if(auth()->user()->isSuperAdministrator() || $thesis->program->college_id == auth()->user()->college_id)
+            {
+                $path = $thesis->file->path;
+
+                if(!\Illuminate\Support\Facades\Storage::disk('google')->exists($path)){
+                   abort(404);
+                }
+
+                return Response::make(file_get_contents(\Illuminate\Support\Facades\Storage::disk('google')->url($path)), 200, [
+                    'Content-Type' => 'application/pdf',
+                    'Content-Disposition' => 'inline; filename="'.$thesis->file->description.'"'
+                ]);
+            }else
+            {
+                abort(403);
+            }
+
+            
+        })->name('file');
         Route::get('thesis/create', function(){
             return view('library.form.thesis');
         })->name('thesis.create');

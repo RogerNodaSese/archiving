@@ -4,19 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\College;
+use App\Models\Thesis;
 
-class Directory extends Model
+class File extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'path',
-        'college_id'
+        'description',
+        'path'
     ];
 
-    public function dir()
+    public function thesis()
     {
-        return $this->morphTo();
+        return $this->belongsTo(Thesis::class, 'id', 'file_id');
     }
 }

@@ -8,6 +8,7 @@ use App\Models\Keyword;
 use App\Models\Subject;
 use App\Models\Author;
 use App\Models\Program;
+use App\Models\File;
 
 class Thesis extends Model
 {
@@ -19,7 +20,8 @@ class Thesis extends Model
         'date_of_issue',
         'abstract',
         'program_id',
-        'citation'
+        'citation',
+        'file_id'
     ];
 
     public function keywords()
@@ -42,6 +44,11 @@ class Thesis extends Model
         return $this->belongsTo(Program::class, 'program_id', 'id');
     }
 
+    public function file()
+    {
+        return $this->belongsTo(File::class, 'file_id', 'id');
+    }
+
     public static function boot(){
         parent::boot();
         self::deleting(function($thesis){
@@ -54,6 +61,8 @@ class Thesis extends Model
             $thesis->subjects()->each(function($subject){
                 $subject->delete();
             });
+
+            File::doesntHave('thesis')->delete();
         });
     }
 }

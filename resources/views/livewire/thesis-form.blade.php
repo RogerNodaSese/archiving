@@ -156,13 +156,16 @@
             <label for="inputPassword" class="col-sm-2 col-form-label">File</label>
             <div class="col-sm-10">
               <input type="file" class="form-control-file col-sm-4" style="margin-left:-15px;" wire:model="file" name="thesis" id="inputPassword">
+              <div wire:loading wire:target="file" class="spinner-grow text-primary" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>  
               @error('file')
                 <small class="text-danger col-sm-4" style="margin-left:-15px;">{{ $message }}</small>
               @enderror
             </div>
             </div>
             <div class="col-md-4 col-lg-2 form-group ml-auto" style="">
-                <button type="submit"  class="btn btn-primary form-control" id="inputPassword">SUBMIT</button>
+                <button type="submit" wire:loading.attr="disabled" wire:target="file" class="btn btn-primary form-control" id="inputPassword">SUBMIT</button>
               </div>
             </div>
           </div>

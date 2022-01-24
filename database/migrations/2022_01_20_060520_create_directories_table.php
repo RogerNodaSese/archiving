@@ -16,7 +16,7 @@ class CreateDirectoriesTable extends Migration
         Schema::create('directories', function (Blueprint $table) {
             $table->id();
             $table->string('path');
-            $table->foreignId('college_id')->constrained('colleges')->onDelete('cascade');
+            $table->morphs('dir');
             $table->timestamps();
         });
     }

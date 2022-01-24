@@ -37,7 +37,7 @@
                 </a> 
             </td>
             <td class="p-1"> 
-                <a href="{{ route('library.requests.delete', [$thesis->id]) }}" onclick="event.preventDefault(); del({{$thesis->id}})" class="btn btn-danger"> 
+                <a href="{{ route('library.requests.delete', [$thesis->id]) }}" onclick="event.preventDefault(); del({{$thesis->id}});" class="btn btn-danger"> 
                     <span class="material-icons">
                         delete
                     </span>
@@ -67,4 +67,13 @@
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="{{ asset('js/verification.js') }}"></script>
 @endpush
+
+@if(session('deleted'))
+
+@push('scripts')
+    <script>deleted()</script>
+@endpush
+
+@endif
 @endsection
+

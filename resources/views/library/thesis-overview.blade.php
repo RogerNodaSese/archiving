@@ -84,6 +84,14 @@
                 @endforeach
             </h4>
         </div>
+        @if(auth()->user()->isSuperAdministrator() || $thesis->program->college_id == auth()->user()->college_id)
+        <div class="d-flex flex-row mt-4">
+            <label class="col-4 col-lg-2" for="subj">File:</label>
+            <h4 class="col-8 col-lg-9" id="subj">
+                    <a class="link" href="{{route('file', $thesis->id)}}">{{$thesis->file->description}}</a>
+            </h4>
+        </div>
+        @endif
         <div class="d-flex flex-column mt-4">
             <label class="col-12 col-lg-12" for="abs">Suggested citation:</label>
             <div class="col-12 col-lg-12">

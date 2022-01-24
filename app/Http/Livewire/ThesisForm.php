@@ -15,6 +15,8 @@ use App\Models\Thesis;
 use App\Models\Keyword;
 use App\Models\Subject;
 use App\Models\Author;
+use App\Models\Program;
+use App\Models\File;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
@@ -41,6 +43,8 @@ class ThesisForm extends Component
     public $file;
     private $keyId;
     private $subId;
+    private $titleSlug;
+    private $data_path;
 
     protected function rules(){ 
         return [
@@ -56,26 +60,29 @@ class ThesisForm extends Component
         'keyword'               => 'required',
         'citation'              => ['required', new WordCount(15)],
         'abstract'              => ['required', new WordCount(150)],
-        'file'                  => 'nullable|file|mimes:pdf',
+        'file'                  => 'required|file|mimes:pdf|min:1000|max:16000',
         ];
     }
 
     protected $messages = [
-        'authors.*.firstname.required'  => 'Firstname required',
-        'authors.*.lastname.required'   => 'Lastname required',
-        'regex'                         => 'Only (A-Z a-z) characters',
-        'title.required'                => 'Title required',
-        'day.required'                  => 'Day required',
-        'month.required'                => 'Month required',
-        'year.required'                 => 'Year required',
-        'college.required'              => 'College required',
-        'program.required'              => 'Program required',
-        'subject.required'              => 'Subject required',
-        'keyword.required'              => 'Keyword required',
-        'abstract.required'             => 'Abstract required'
+        'authors.*.firstname.required'  => 'Firstname required.',
+        'authors.*.lastname.required'   => 'Lastname required.',
+        'regex'                         => 'Only (A-Z a-z) characters.',
+        'title.required'                => 'Title required.',
+        'day.required'                  => 'Day required.',
+        'month.required'                => 'Month required.',
+        'year.required'                 => 'Year required.',
+        'college.required'              => 'College required.',
+        'program.required'              => 'Program required.',
+        'subject.required'              => 'Subject required.',
+        'keyword.required'              => 'Keyword required.',
+        'abstract.required'             => 'Abstract required.',
+        'file.min'                      => 'The file must be at least 1MB.',
+        'file.max'                      => 'The file size exceeded to 16MB.'
     ];
     public function mount()
     {
+        $this->pdf = collect();
         $this->authors = [
             ['lastname' => '' , 'firstname' => ''],
         ];
@@ -138,7 +145,6 @@ class ThesisForm extends Component
 
     public function addThesis()
     {   
-        $this->fileDirectory();
         // Storage::disk('google')->makeDirectory('archives');
         // $this->file->store('','google');
         if($this->validateUserSubmission())
@@ -146,22 +152,37 @@ class ThesisForm extends Component
             return redirect()->route('thesis.create')->with('message', 'Request Error');
         };
         //Validate data
+        
+
         sleep(1);
         $this->validate();
         $this->keyId = [];
         $this->subId = [];
         $keywords = explode(',' , $this->keyword);
         $subjects = explode(',' , $this->subject);
+        
+        
         DB::transaction(function () use($keywords, $subjects) {
+        
+        $this->file->storeAs(Program::find($this->program)->directory->path,Str::slug($this->title." ".$this->day." ".$this->month." ".$this->year),'google');
+
+        $file = File::create([
+            'description' => Str::slug($this->title." ".$this->day." ".$this->month." ".$this->year),
+            'path'        => $this->fileDirectory()
+        ]);
+
         $thesis = Thesis::create([
             'user_id'       => \Illuminate\Support\Facades\Auth::id(),
             'title'         => $this->title,
             'date_of_issue' => \Carbon\Carbon::createFromDate($this->year, $this->month, $this->day),
             'citation'      => $this->citation,
             'abstract'      => $this->abstract,
-            'program_id'    => $this->program
+            'program_id'    => $this->program,
+            'file_id'       => $file->id,
         ]);
 
+       
+        
         if(auth()->user()->role_id == Role::SUPER_ADMIN ) 
         {
             $thesis->verified = true;
@@ -240,10 +261,18 @@ class ThesisForm extends Component
     private function fileDirectory()
     {
         $storage = Storage::disk('google');
-        
-        $path = \App\Models\Directory::where('college_id', $this->college)->first()->path;
-        $this->file->storeAs($path,Str::slug($this->title, '-'),'google');
+        $files = $storage->files(Program::find($this->program)->directory->path);
+        foreach($files as $file)
+        {
+            $data = $storage->getAdapter()->getMetadata($file);
+            if(Str::is(Str::lower($data['filename']), Str::lower(Str::slug($this->title." ".$this->day." ".$this->month." ".$this->year,'-'))))
+            {
+                return $data['path'];
+            }
+        }
     }
+
+
     public function resetForm()
     {
         

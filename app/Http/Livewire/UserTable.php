@@ -16,6 +16,7 @@ class UserTable extends Component
     protected $paginationTheme = 'bootstrap';
 
     public $search = '';
+    public $role_id;
 
     public function render()
     {
@@ -27,7 +28,7 @@ class UserTable extends Component
             }])
             ->whereHas('role', function(Builder $query){
                 $query->where('description', 'LIKE', '%'.$this->search.'%');
-            } )
+            })
             // ->where(function($query){
             //     $query->where('first_name','like','%'.$this->search.'%')
             //     ->orWhere('last_name','like','%'.$this->search.'%')

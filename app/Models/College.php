@@ -26,7 +26,7 @@ class College extends Model
 
     public function directory()
     {
-        return $this->hasOne(Directory::class, 'college_id', 'id');
+        return $this->morphOne(Directory::class, 'dir');
     }
 
     public static function booted()
@@ -34,15 +34,14 @@ class College extends Model
         static::created(function ($college){
             $storage = Storage::disk('google');
             $storage->makeDirectory($college->description);
-            $directories = collect($storage->directories());
+            $directories = $storage->directories();
             foreach($directories as $directory)
             {
                 $data = $storage->getAdapter()->getMetadata($directory);
                 if(Str::is(Str::lower($data['filename']), Str::lower($college->description)))
                 {
-                    return Directory::create([
-                        'path' => $data['path'],
-                        'college_id' => $college->id
+                    return $college->directory()->create([
+                        'path' => $data['path']
                     ]);
                 }
             }
