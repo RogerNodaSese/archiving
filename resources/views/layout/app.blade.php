@@ -7,7 +7,7 @@
     <title>{{env("APP_NAME")}}</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="{{ asset('js/app.js') }}" defer></script>
-
+    <link rel="icon" href="https://neu.edu.ph/main/assets/images/NEU_LOGO.png">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
      @stack('styles')
 </head>

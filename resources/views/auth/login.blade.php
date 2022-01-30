@@ -23,7 +23,7 @@
     <div class="container my-5">
         <div class="row no-gutters ">
             <div class="image col-lg-6 d-flex justify-content-center py-5">
-                <img src="{{ asset('/storage//logo.png') }}" alt="" class="img-fluid my-5 ">
+                <img src="https://neu.edu.ph/main/assets/images/NEU_LOGO.png" alt="" class="img-fluid my-5 ">
             </div>
             <div class="welcome col-lg-6 px-5 pt-5 mt-5">
                 <div class="d-flex flex-column">

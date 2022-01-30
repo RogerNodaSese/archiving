@@ -1,6 +1,6 @@
 <div class="img-container py-4 px-3 mb-5 d-flex justify-content-center">
     <div class="media">
-        <img src="{{ asset('/storage//logo.png') }}" alt="" width="80" height="80" class="logo rounded-circle img-thumbnail shadow-sm">
+        <img src="https://neu.edu.ph/main/assets/images/NEU_LOGO.png" alt="" width="80" height="80" class="logo rounded-circle img-thumbnail shadow-sm">
     </div>
 </div>
 
