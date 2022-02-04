@@ -84,15 +84,6 @@
         </a>
     </li>
     <li class="nav-item">
-        <a href="" class="nav-link text-dark bg-light">
-            <span class="material-icons">
-                people
-            </span>
-                <small>Author</small>
-        </a>
-    </li>
-
-    <li class="nav-item">
         <a href="{{route('student.title')}}" class="nav-link @if(\Request::routeIs('student.title'))bg-info text-white @else text-dark bg-light @endif">
             <span class="material-icons">
                 title

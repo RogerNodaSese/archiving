@@ -15,13 +15,13 @@
     <div class="d-flex flex-row">
       <div class="col-6 col-md-6 col-lg-6">
     <div class="custom-control custom-switch">
-      <input type="radio" class="custom-control-input" wire:model="role_id" value="1" id="customSwitch1">
+      <input type="radio" class="custom-control-input" wire:model="role" value="1" id="customSwitch1">
       <label class="custom-control-label" for="customSwitch1">Admin</label>
     </div>
       </div>
     <div class="custom-control custom-switch">
       <div class="col-6 col-md-6 col-lg-6">
-      <input type="radio" class="custom-control-input" wire:model="role_id" value="2" id="customSwitch2">
+      <input type="radio" class="custom-control-input" wire:model="role" value="2" id="customSwitch2">
       <label class="custom-control-label" for="customSwitch2">Student</label>
       </div>
     </div>

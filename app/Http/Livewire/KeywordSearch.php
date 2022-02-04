@@ -26,7 +26,7 @@ class KeywordSearch extends Component
        
         return view('livewire.keyword-search',
         [
-            'keywords' => Keyword::whereRelation('theses', 'verified', true)->withCount('theses')->paginate(5)
+            'keywords' => Keyword::whereRelation('theses', 'verified', true)->where('description', 'LIKE', '%'.$this->search.'%')->withCount('theses')->paginate(5)
         ]);
     }
 }

@@ -16,7 +16,7 @@ class UserTable extends Component
     protected $paginationTheme = 'bootstrap';
 
     public $search = '';
-    public $role_id;
+    public $role;
 
     public function render()
     {

@@ -60,7 +60,7 @@ class ThesisForm extends Component
         'keyword'               => 'required',
         'citation'              => ['required', new WordCount(15)],
         'abstract'              => ['required', new WordCount(150)],
-        'file'                  => 'required|file|mimes:pdf|min:1000|max:16000',
+        'file'                  => 'required|file|mimes:pdf|min:100|max:16000',
         ];
     }
 

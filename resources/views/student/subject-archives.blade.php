@@ -20,12 +20,12 @@
             {{$thesis->title}}
         </x-card.header>
         <x-card.body style="background:#FFFFFF">
-            <x-card.text> Author/s: 
+            <x-card.text class="font-weight-normal"> <b>Author/s: </b>
                 @foreach ($thesis->authors as $author)
                     {{$author->last_name}}, {{substr($author->first_name, 0, 1)}};
                 @endforeach
-               <br> Date Issue: {{$thesis->date_of_issue}}
-               <br> Publisher: {{$thesis->publisher}}
+               <br><b>Date Issue:</b> {{$thesis->date_of_issue}}
+               <br><b> Abstract:</b> <br> {{\Illuminate\Support\Str::limit($thesis->abstract, 150)}}
                </x-card.text>
         </x-card.body>
         <a href="{{route('student.archive',[$thesis->program->college->slug,$thesis->program->slug,$thesis->id])}}" class="btn btn-primary">View</a>

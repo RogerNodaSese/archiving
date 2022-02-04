@@ -7,7 +7,7 @@
                     College name
               </label>
               <div class="col-8 col-md-8 col-lg-8 d-inline mb-2">
-                <input type="text" class="form-control" wire:model.debounce.250ms="collegeName" id="staticEmail"  placeholder="ex. College of Computer Studies">
+                <input type="text" wire:loading.attr="disabled" class="form-control" wire:model.lazy="collegeName" id="staticEmail"  placeholder="ex. College of Computer Studies">
                 @error('collegeName')
                     <small class="text-danger">{{ $message }}</small>
                 @enderror
@@ -18,7 +18,7 @@
                       College slug
                 </label>
                 <div class="col-8 col-md-8 col-lg-8 d-inline mb-2">
-                  <input type="text" class="form-control" wire:model.debounce.250ms="collegeSlug" id="staticEmail"  placeholder="Slug">
+                  <input type="text" wire:loading.attr="disabled" class="form-control" wire:model.debounce.250ms="collegeSlug" id="staticEmail"  placeholder="Slug">
                   @error('collegeSlug')
                     <small class="text-danger">{{ $message }}</small>
                   @enderror
@@ -32,7 +32,7 @@
                     @endif
               </label>
               <div class="col-8 col-md-8 col-lg-8 d-inline mb-2">
-                <input type="text" class="form-control" wire:key="{{$loop->index}}" wire:model.lazy="programs.{{$index}}.description" id="staticEmail"  placeholder="ex. Bachelor of Science in Information Technology">
+                <input type="text" wire:loading.attr="disabled" class="form-control" wire:key="{{$loop->index}}" wire:model.lazy="programs.{{$index}}.description" id="staticEmail"  placeholder="ex. Bachelor of Science in Information Technology">
                 @error('programs.'.$index.'.description')
                     <small class="text-danger">{{ $message }}</small>
                 @enderror
@@ -50,7 +50,7 @@
             </div>
             @endforeach
               <div class="col-12 col-lg-2 form-group ml-auto mt-5" style="">
-                <button type="submit" class="btn btn-primary form-control" id="inputPassword">SUBMIT</button>
+                <button type="submit" wire:loading.attr="disabled" class="btn btn-primary form-control" id="inputPassword">SUBMIT</button>
               </div>
             </div>
           </div>

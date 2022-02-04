@@ -6,13 +6,8 @@ class Color{
     
     public static function randomColor(){
         $color = collect([
-            "#ddbb99",
-            "#eebb88",
-            "#ddeedd",
-            "#faf0e6",
-            "#ddeecc",
-            "#bbeedd",
-            "#d3ffce",
+           
+            "#ddeedd"
         ]);
         return $color->random();
     }

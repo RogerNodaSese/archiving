@@ -154,7 +154,7 @@
           </div>
           <div class="form-group row">
             <label for="inputPassword" class="col-sm-2 col-form-label">File</label>
-            <div class="col-sm-10">
+            <div class="col-10 col-md-10 col-lg-10">
               <input type="file" class="form-control-file col-sm-4" style="margin-left:-15px;" wire:model="file" name="thesis" id="inputPassword">
               <div wire:loading wire:target="file" class="spinner-grow text-primary" role="status">
                 <span class="sr-only">Loading...</span>
