@@ -23,7 +23,10 @@ class UserTable extends Component
         sleep(0.5);
         return view('livewire.user-table',
         [
-            'users' => User::select('last_name','first_name','email','email_verified_at','role_id')->with(['role' => function($query){
+            
+            'users' => User::select('last_name','first_name','email','email_verified_at','role_id','college_id')->with(['role' => function($query){
+                $query->select('id','description');
+            }, 'college' => function($query){
                 $query->select('id','description');
             }])
             ->whereHas('role', function(Builder $query){

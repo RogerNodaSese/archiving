@@ -60,6 +60,27 @@
                 </a>
             </li>
 @endif
+
+@if(auth()->user()->role_id == \App\Models\Role::ADMIN)
+<li class="nav-item">
+    <a href="{{route('college.requests')}}" class="nav-link @if(\Request::routeIs('college.requests'))bg-info text-white @else text-dark bg-light @endif">
+        <span class="material-icons">
+            list_alt
+        </span>
+        <small>Request</small>
+        @php
+            $rejectedCount = \App\Models\Thesis::whereRelation('program', 'college_id', auth()->user()->college_id)->where('verified', false)->onlyTrashed()->count();
+            $pendingCount = \App\Models\Thesis::whereRelation('program', 'college_id', auth()->user()->college_id)->where('verified', false)->count();
+        @endphp
+        @if($rejectedCount > 0)
+        <span class="badge badge-danger">Rejected: {{$rejectedCount}} </span>  
+        @endif
+        @if($pendingCount> 0)
+        <span class="badge badge-success">Pending: {{$pendingCount}} </span>  
+        @endif
+    </a>
+</li>
+@endif
 </ul>
 
 {{-- 

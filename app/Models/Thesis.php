@@ -4,15 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Keyword;
 use App\Models\Subject;
 use App\Models\Author;
 use App\Models\Program;
 use App\Models\File;
+use App\Models\SubjectThesis;
 
 class Thesis extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
+    
 
     protected $fillable = [
         'user_id',
@@ -26,12 +29,16 @@ class Thesis extends Model
 
     public function keywords()
     {
-        return $this->belongsToMany(Keyword::class,'keyword_thesis', 'thesis_id', 'keyword_id');
+        return $this->belongsToMany(Keyword::class,'keyword_thesis', 'thesis_id', 'keyword_id')
+                            ->whereNull('deleted_at')
+                            ->withPivot(['deleted_at']);;
     }
 
     public function subjects()
     {
-        return $this->belongsToMany(Subject::class, 'subject_thesis', 'thesis_id', 'subject_id');
+        return $this->belongsToMany(Subject::class, 'subject_thesis', 'thesis_id', 'subject_id')
+                            ->whereNull('deleted_at')
+                            ->withPivot(['deleted_at']);
     }
 
     public function authors()
@@ -49,20 +56,48 @@ class Thesis extends Model
         return $this->belongsTo(File::class, 'file_id', 'id');
     }
 
+    public function subjectsWithTrashed(){
+        return $this->belongsToMany(Subject::class, 'subject_thesis', 'thesis_id', 'subject_id')
+                    ->whereNull('deleted_at')
+                    ->orWhereNotNull('deleted_at')
+                    ->withPivot(['deleted_at']);
+    }
+
+    public function keywordsWithTrashed()
+    {
+        return $this->belongsToMany(Keyword::class,'keyword_thesis', 'thesis_id', 'keyword_id')
+                    ->whereNull('deleted_at')
+                    ->orWhereNotNull('deleted_at')
+                    ->withPivot(['deleted_at']);
+    }
+
     public static function boot(){
         parent::boot();
         self::deleting(function($thesis){
-            $thesis->authors()->each(function($author){
-                $author->delete();
-            });
-            $thesis->keywords()->each(function($keyword){
-                $keyword->delete();
-            });
-            $thesis->subjects()->each(function($subject){
-                $subject->delete();
+            $thesis->subjects()->each(function($subject) use($thesis){
+                $thesis->subjects()->updateExistingPivot($subject, ['deleted_at' => \Carbon\Carbon::now()]);
             });
 
-            File::doesntHave('thesis')->delete();
+            $thesis->keywords()->each(function($keyword) use($thesis){
+                $thesis->keywords()->updateExistingPivot($keyword, ['deleted_at' => \Carbon\Carbon::now()]);
+            });
         });
     }
+
+//     public static function boot(){
+//         // parent::boot();
+//         // self::deleting(function($thesis){
+//         //     $thesis->authors()->each(function($author){
+//         //         $author->delete();
+//         //     });
+//         //     $thesis->keywords()->each(function($keyword){
+//         //         $keyword->delete();
+//         //     });
+//         //     $thesis->subjects()->each(function($subject){
+//         //         $subject->delete();
+//         //     });
+
+//             // File::doesntHave('thesis')->delete();
+//         // });
+//     }
 }

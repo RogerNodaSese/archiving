@@ -1,5 +1,14 @@
 @extends('layout.dashboard')
 
+@section('header')
+<h2 class="display-5 col-12 col-md-12 col-lg-12 text-center mb-3">{{$thesis->title}}</h2>
+@if ($thesis->trashed())
+<p class="col-12 col-md-12 col-lg-12 text-center mb-3"><b>Status:</b> <span class="text-danger">Rejected</span></p>
+@else
+<p class="col-12 col-md-12 col-lg-12 text-center mb-3"><b>Status:</b> <span class="text-success">Pending</span></p>
+@endif
+@endsection
+
 @push('styles')
     <style>
         .link:visited{
@@ -14,6 +23,9 @@
         #abs{
             font-size: 1vw;
         }
+        p{
+            font-weight: 500;
+        }
         @media only screen and (max-width: 600px) {
             h4 {
                 font-size: 2.5vw;
@@ -27,16 +39,11 @@
         }
     </style>
 @endpush
-
-@section('header')
-<h2 class="display-5 col-12 col-md-12 col-lg-12 text-center mb-3">{{$thesis->title}}</h2>
-@endsection
-
 @section('breadcrumbs')
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="{{route('library.requests')}}">Archive Requests</a></li>
-      <li class="breadcrumb-item active" aria-current="page">{{$thesis->title}}</li>
+            <li class="breadcrumb-item"><a href="{{route('college.requests')}}">Requests</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Metadata</li>
     </ol>
   </nav>
 @endsection
@@ -81,7 +88,7 @@
                 <div class="d-flex flex-column">
                     <label class="col-12 col-lg-12" for="key">Keyword/s:</label>
                     <p class="col-12 col-lg-12" id="key">
-                        @foreach ($thesis->keywords as $keyword)
+                        @foreach ($thesis->keywordsWithTrashed as $keyword)
                             <a class="link" href="/archives/keyword/{{$keyword->description}}">{{$keyword->description}}</a>;
                         @endforeach
                     </p>
@@ -91,7 +98,7 @@
                 <div class="d-flex flex-column">
                     <label class="col-12 col-lg-12" for="subj">Subject/s:</label>
                     <p class="col-12 col-lg-12" id="subj">
-                        @foreach ($thesis->subjects as $subject)
+                        @foreach ($thesis->subjectsWithTrashed as $subject)
                             <a class="link" href="{{route('student.subject', $subject->description)}}">{{$subject->description}}</a>;
                         @endforeach
                     </p>

@@ -24,6 +24,7 @@ class CreateThesesTable extends Migration
             $table->boolean('verified')->default(0);
             $table->foreignId('file_id')->nullable()->constrained('files');
             $table->foreignId('program_id')->constrained('programs');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

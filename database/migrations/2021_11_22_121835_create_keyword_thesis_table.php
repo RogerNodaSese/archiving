@@ -16,6 +16,7 @@ class CreateKeywordThesisTable extends Migration
         Schema::create('keyword_thesis', function (Blueprint $table) {
             $table->foreignId('thesis_id')->constrained('theses')->onDelete('cascade');
             $table->foreignId('keyword_id')->constrained('keywords')->onDelete('cascade');
+            $table->softDeletes();
         });
     }
 

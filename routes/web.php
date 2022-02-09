@@ -96,6 +96,46 @@ Route::group(['middleware' => ['auth','verified']], function(){
     Route::group(['middleware' => 'role:admin', 'prefix' => 'college', 'as' => 'college.'], function(){
         Route::get('/', [CollegeController::class , 'index'])->name('index');
     });
+
+    Route::group(['middleware' => 'role:admin', 'as' => 'college.'], function(){
+        Route::get('/request', function(){
+            $theses = \App\Models\Thesis::whereRelation('program', 'college_id', auth()->user()->college_id)->where('verified',false)->withTrashed()->get();
+            return view('college.requests', compact('theses'));
+        })->name('requests');
+        Route::get('/request/view/{id}', function($id){
+            $thesis = \App\Models\Thesis::whereRelation('program', 'college_id', auth()->user()->college_id)->with(['program' => function($query){
+                $query->with(['college' => function($query) {
+                    $query->select('id','description');
+                }]);
+            },'authors','subjectsWithTrashed','keywordsWithTrashed'])->withTrashed()->findOrFail($id);
+            $dateFormatted = \Carbon\Carbon::createFromFormat('Y-m-d', $thesis->date_of_issue );
+            $date = [
+                'month' => $dateFormatted->format('F'),
+                'day' => $dateFormatted->format('d'),
+                'year' => $dateFormatted->format('Y'),
+            ];
+            $file_size = \Illuminate\Support\Facades\Storage::disk('google')->size($thesis->file->path);
+            $kb = round($file_size / 1024);
+
+            return view('college.view', compact('thesis','date'))->with('kb', $kb);
+        })->name('requests.view');
+
+        Route::put('/request/submit/{id}', function($id){
+            $thesis = \App\Models\Thesis::whereRelation('program', 'college_id', auth()->user()->college_id)->with(['subjectsWithTrashed','keywordsWithTrashed'])->withTrashed()->findOrFail($id);
+            // $subjects = \App\Models\SubjectThesis::where('thesis_id', $thesis->id)->get();
+            // $keywords = \App\Models\KeywordThesis::where('thesis_id', $thesis->id)->get();
+            $thesis->restore();
+            foreach($thesis->subjectsWithTrashed as $subject){
+                $thesis->subjects()->updateExistingPivot($subject, ['deleted_at' => NULL]);
+            }
+
+            foreach($thesis->keywordsWithTrashed as $keyword){
+                $thesis->keywords()->updateExistingPivot($keyword->id, ['deleted_at' => NULL]);
+            }
+        
+            return redirect('/request')->with('submitted', 'Submitted successfully!');
+        })->name('requests.submit');
+    });
     //Routes for Super-admin
     Route::group(['middleware' => 'role:superadmin', 'prefix' => 'library', 'as' => 'library.'], function(){
         Route::get('/', [LibraryController::class , 'index'])->name('index');
@@ -121,30 +161,40 @@ Route::group(['middleware' => ['auth','verified']], function(){
                     $query->select('id','description');
                 }]);
             },'authors','subjects','keywords'])->findOrFail($slug);
+            $file_size = \Illuminate\Support\Facades\Storage::disk('google')->size($thesis->file->path);
+            $kb = round($file_size / 1024);
             $dateFormatted = \Carbon\Carbon::createFromFormat('Y-m-d', $thesis->date_of_issue );
             $date = [
                 'month' => $dateFormatted->format('F'),
                 'day' => $dateFormatted->format('d'),
                 'year' => $dateFormatted->format('Y'),
             ];
-            return view('library.thesis-overview', compact('thesis','date'));
+            return view('library.thesis-overview', compact('thesis','date'))->with('kb',$kb);
         })->name('request.view');
         Route::post('/archive-requests/{id}', function($id){
             $thesis = \App\Models\Thesis::find($id);
             $thesis->verified = true;
             $thesis->save();
-            return back();
+            return redirect('archive-requests')->with('verified', 'Request has been verified');
         })->name('requests.create');
-
-        Route::delete('archive-request/{id}', function($id){
-            $thesis = \App\Models\Thesis::with('file')->find($id);
-            $thesis->delete();
-            \Illuminate\Support\Facades\Storage::disk('google')->delete($thesis->file->path);
-            return redirect('/archive-requests')->with('deleted', 'Request deleted!'); 
-        })->name('requests.delete');
     });
     //Route for Super-admin and Admin
     Route::group(['middleware' => 'role:superadmin,admin'], function(){
+        Route::delete('archive-request/{id}', function($id){
+            $thesis = \App\Models\Thesis::with('file')->withTrashed()->find($id);
+            if(auth()->user()->role_id == \App\Models\Role::SUPER_ADMIN){
+                
+                $thesis->delete();
+                return redirect('/archive-requests')->with('deleted', 'Request deleted!');
+            }
+            if(auth()->user()->role_id == \App\Models\Role::ADMIN){
+                
+                $thesis->forceDelete();
+                \Illuminate\Support\Facades\Storage::disk('google')->delete($thesis->file->path);
+                return redirect('/request')->with('deleted', 'Request deleted!');
+            }
+             
+        })->name('requests.delete');
         Route::get('/file/{id}/', function($id){
             $thesis = \App\Models\Thesis::with('file','program')->findOrFail($id);
             if(auth()->user()->isSuperAdministrator() || $thesis->program->college_id == auth()->user()->college_id)
@@ -201,7 +251,6 @@ Route::group(['middleware' => ['auth','verified']], function(){
 //         dd('auth');
 //     });
 // });
-
 
 //Create migration
 

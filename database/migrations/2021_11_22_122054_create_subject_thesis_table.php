@@ -16,6 +16,7 @@ class CreateSubjectThesisTable extends Migration
         Schema::create('subject_thesis', function (Blueprint $table) {
             $table->foreignId('thesis_id')->constrained('theses')->onDelete('cascade');
             $table->foreignId('subject_id')->constrained('subjects')->onDelete('cascade');
+            $table->softDeletes();
         });
     }
 

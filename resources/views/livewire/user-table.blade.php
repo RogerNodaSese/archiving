@@ -38,9 +38,9 @@
             <th scope="col">Firstname</th>
             <th scope="col">Lastname</th>
             <th scope="col">Email</th>
+            <th scope="col">Department</th>
             <th scope="col">Role</th>
             <th scope="col">Verified</th>
-            <th scope="col">Action</th>
           </tr>
         </thead>
         <tbody>
@@ -49,6 +49,13 @@
             <td>{{$user->first_name}}</td>
             <td>{{$user->last_name}}</td>
             <td>{{$user->email}}</td>
+            @if (!empty($user->college->description))
+            <td>{{$user->college->description}}</td>
+            @elseif($user->role_id == \App\Models\Role::SUPER_ADMIN)
+            <td>Library</td>
+            @else
+            <td>N/A</td>
+            @endif
             <td>{{$user->role->description}}</td>
             @if ($user->email_verified_at)
             <td>Yes</td>

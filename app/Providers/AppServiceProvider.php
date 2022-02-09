@@ -25,5 +25,12 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Paginator::useBootstrap();
+        // $theses = \App\Models\Thesis::all();
+        // dd($theses->subjects());
+        // // foreach($theses as $thesis){
+        // //     foreach($thesis->subjects as $subject){
+        // //         dd($subject->pivot);
+        // //     }
+        // }
     }
 }
