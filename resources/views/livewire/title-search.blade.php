@@ -28,7 +28,7 @@
                 <tr>
                     <th scope="row">{{$loop->iteration}}</th>
                     <td>{{$thesis->title}}</td>
-                    <td class="col-1"><a href="{{route('student.archive',[$thesis->program->college->slug,$thesis->program->slug,$thesis->id])}}" class="btn btn-primary">View</a></td>
+                    <td class="col-1"><a href="{{route('student.archive',[$thesis->program->college->slug,$thesis->program->slug,$thesis->id])}}" class="text-primary" data-toggle="tooltip" data-placement="top" title="View">View </a></td>
                 </tr>
         @empty
         <tr>

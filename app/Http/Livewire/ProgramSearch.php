@@ -35,7 +35,7 @@ class ProgramSearch extends Component
             ->orWhere('description', 'LIKE', '%'.$this->search.'%')
             ->orWhere('slug', 'LIKE', '%'.$this->search.'%')
             ->orderBy('theses_count','desc')
-            ->paginate(10);
+            ->simplePaginate(10);
         }else
         {
 
@@ -47,9 +47,7 @@ class ProgramSearch extends Component
 
         return view('livewire.program-search', [
             'programs' => Program::select('id','description','slug','college_id')
-            ->withCount(['theses' => function(Builder $query){
-                $query->where('verified', true);
-            }])
+            ->withCount(['theses'])
             ->with(['college:id,description,slug'])
             ->whereHas('college', function(Builder $query){
                 $query->where('description', 'LIKE', '%'.$this->search.'%')

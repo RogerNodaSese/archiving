@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Keyword;
 use App\Models\Subject;
 use App\Models\Author;
@@ -14,13 +13,14 @@ use App\Models\SubjectThesis;
 
 class Thesis extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
     
 
     protected $fillable = [
         'user_id',
         'title',
-        'date_of_issue',
+        'publisher',
+        'date_of_publication',
         'abstract',
         'program_id',
         'citation',

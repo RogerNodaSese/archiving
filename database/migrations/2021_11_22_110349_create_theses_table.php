@@ -15,16 +15,20 @@ class CreateThesesTable extends Migration
     {
         Schema::create('theses', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users');
+            //REMOVE
+            // $table->foreignId('user_id')->constrained('users');
             $table->string('title');
-            $table->date('date_of_issue');
+            //Changed to dop
+            $table->string('date_of_publication');
             $table->string('publisher')->default('New Era University');
             $table->text('citation');
             $table->text('abstract');
-            $table->boolean('verified')->default(0);
+            //REMOVE
+            // $table->boolean('verified')->default(0);
             $table->foreignId('file_id')->nullable()->constrained('files');
             $table->foreignId('program_id')->constrained('programs');
-            $table->softDeletes();
+            //REMOVE
+            // $table->softDeletes();
             $table->timestamps();
         });
     }

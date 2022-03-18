@@ -57,8 +57,8 @@
             </div>
             <div class="col-6 col-md-6 col-lg-6">
                 <div class="d-flex flex-column">
-                    <label class="col-12 col-lg-12" for="date">Date of issue:</label>
-                    <p class="col-12 col-lg-12" id="date">{{$date['month']}} {{$date['day']}}, {{$date['year']}}</p>
+                    <label class="col-12 col-lg-12" for="date">Date of publication:</label>
+                    {{-- <p class="col-12 col-lg-12" id="date">{{$date['month']}} {{$date['day']}}, {{$date['year']}}</p> --}}
                 </div>
             </div>
         </div>
@@ -76,7 +76,7 @@
                 </div>
             </div>
         </div>
-        <div class="d-flex flex-row mt-4">
+        {{-- <div class="d-flex flex-row mt-4">
             <div class="col-6 col-md-6 col-lg-6">
                 <div class="d-flex flex-column">
                     <label class="col-12 col-lg-12" for="key">Keyword/s:</label>
@@ -86,7 +86,7 @@
                         @endforeach
                     </p>
                 </div>
-            </div>
+            </div> --}}
             <div class="col-6 col-md-6 col-lg-6">
                 <div class="d-flex flex-column">
                     <label class="col-12 col-lg-12" for="subj">Subject/s:</label>

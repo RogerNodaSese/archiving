@@ -18,10 +18,10 @@ class CheckRole
     {
         foreach($roles as $role)
         {
-            if($role == 'superadmin' && auth()->user()->role_id == Role::SUPER_ADMIN ){
-                return $next($request);
-            }
-    
+            // if($role == 'superadmin' && auth()->user()->role_id == Role::SUPER_ADMIN ){
+            //     return $next($request);
+            // }
+            //REMOVE
             if($role == 'admin' && auth()->user()->role_id == Role::ADMIN ){
                 return $next($request);
             }

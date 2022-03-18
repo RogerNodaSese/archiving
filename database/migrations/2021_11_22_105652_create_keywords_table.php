@@ -11,6 +11,7 @@ class CreateKeywordsTable extends Migration
      *
      * @return void
      */
+    //REMOVE
     public function up()
     {
         Schema::create('keywords', function (Blueprint $table) {

@@ -49,12 +49,12 @@ class LoginController extends Controller
         }
         if(auth()->user()->role_id == Role::ADMIN)
         {
-            return redirect()->route('college.index');
-        }
-        if(auth()->user()->role_id == Role::SUPER_ADMIN)
-        {
             return redirect()->route('library.index');
-        } 
+        }
+        // if(auth()->user()->role_id == Role::SUPER_ADMIN)
+        // {
+        //     return redirect()->route('library.index');
+        // } 
     }
 
 }

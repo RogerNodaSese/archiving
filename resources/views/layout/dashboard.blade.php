@@ -18,16 +18,16 @@
             <div class="row">
             @yield('header') 
             <div class="col-md-2 col-lg-2 ml-auto" style="">
-                @if (auth()->user()->role_id == \App\Models\Role::SUPER_ADMIN || auth()->user()->role_id == \App\Models\Role::ADMIN)
+                @if (auth()->user()->role_id == \App\Models\Role::ADMIN)
                     @if(\Request::routeIs('student.*') && !(\Request::routeIs('student.colleges') || \Request::routeIs('student.programs')))
                         <a href="{{route('thesis.create')}}" class="btn btn-success" id="inputPassword">Create Archive</a>
-                    @elseif(\Request::routeIs('student.colleges') && auth()->user()->role_id == \App\Models\Role::SUPER_ADMIN)
+                    @elseif(\Request::routeIs('student.colleges'))
                         <a href="{{route('library.college.create')}}" class="btn btn-success" id="inputPassword">+ Add College</a>
                     @elseif(\Request::routeIs('student.programs'))
                         <a href="{{route('program.create')}}" class="btn btn-success" id="inputPassword">+ Add Programs</a>
                     @endif
                 @endif
-                @if (auth()->user()->role_id == \App\Models\Role::SUPER_ADMIN)
+                @if (auth()->user()->role_id == \App\Models\Role::ADMIN)
                     @if(\Request::routeIs('library.users'))
                 <a href="{{route('library.users.create')}}" class="btn btn-success" id="inputPassword">+ Add admin</a>
                     @endif
@@ -36,11 +36,13 @@
             </div>
             @yield('breadcrumbs')
             <div class="separator"></div>
+            @yield('title')
             <div class="row text-dark justify-content-center">
 
                 @yield('contents')
 
             </div>
+            @yield('recent')
         </div>
     </div>
 @endsection

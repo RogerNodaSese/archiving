@@ -21,12 +21,10 @@ class CollegeSearch extends Component
         return view('livewire.college-search', [
             'colleges' => College::withCount(['programs'])
             ->with(['programs' => function($query){
-                $query->withCount(['theses' => function(Builder $query){
-                    $query->where('verified', true);
-                }]);
+                $query->withCount(['theses']);
             }])
             ->orWhere('description', 'LIKE', '%'.$this->search.'%')
-            ->paginate(10)
+            ->simplePaginate(10)
         ]);
     }
 }

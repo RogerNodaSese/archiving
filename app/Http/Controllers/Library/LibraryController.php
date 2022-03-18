@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Role;
 use App\Models\Thesis;
 use App\Models\Author;
+use App\Models\Subject;
 class LibraryController extends Controller
 {
     public function index()
@@ -21,18 +22,23 @@ class LibraryController extends Controller
         //         $file_size += $data['size'];
         //     }
             
-        $count = collect([
-            'userCount' => User::whereIn('role_id', [Role::STUDENT, ROLE::ADMIN])->count(),
-            'collegeCount' => User::where('role_id', Role::ADMIN)->count(),
-            'studentCount' => User::where('role_id', Role::STUDENT)->count(),
-            'authorCount' =>  Author::count(),
-            'thesisVerifiedCount' => Thesis::where('verified', true)->count(),
-            'thesisNotVerifiedCount' => Thesis::where('verified', false)->count(),
-            'thesisCount' => Thesis::count(),
-            // 'file_size' => $total_file_size = round($file_size / 1024 / 1024,2)
-        ]);
+        // $count = collect([
+        //     'userCount' => User::whereIn('role_id', [Role::STUDENT, ROLE::ADMIN])->count(),
+        //     'collegeCount' => User::where('role_id', Role::ADMIN)->count(),
+        //     'studentCount' => User::where('role_id', Role::STUDENT)->count(),
+        //     'authorCount' =>  Author::count(),
+        //     'thesisCount' => Thesis::count(),
+        //     // 'file_size' => $total_file_size = round($file_size / 1024 / 1024,2)
+        // ]);
+        $count = [
+            'thesis' => Thesis::count(),
+            'user'   => User::count(),
+            'author' => Author::count(),
+            'subject' => Subject::count(),
+            'recent' => Thesis::latest()->take(10)->get()
+        ];
 
-        return view('library.dashboard', compact('count'));
+        return view('library.dashboard')->with('count', $count);
     }
 
     public function userList()

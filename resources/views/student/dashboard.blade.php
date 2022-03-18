@@ -13,8 +13,6 @@
     </x-card.body>
 </x-card>
 @empty
-    <x-card>
-        <x-card.text>EMPTY</x-card.text>
-    </x-card>
+    <h1 class="display-4 mt-3">No college found</h1>
 @endforelse
 @endsection

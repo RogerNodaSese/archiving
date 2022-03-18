@@ -96,3 +96,14 @@ function verified(){
         'success'
     )
 }
+
+function loading(){
+    Swal.fire({
+        'title' : 'Adding file',
+        'text' : 'Please wait',
+        'background' : '#ddeedd',
+        didOpen: () => {
+        Swal.showLoading()
+      }
+      })
+}

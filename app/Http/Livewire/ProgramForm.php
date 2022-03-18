@@ -39,21 +39,8 @@ class ProgramForm extends Component
             [ 'description' => '',],
         ];
         $this->colleges = College::select('id','description','slug')->get();
-        $this->authorizedUser();
     }
 
-    public function authorizedUser()
-    {
-        if(auth()->user()->isAdministrator())
-        {
-            $this->college = strval(\App\Models\User::find(auth()->user()->id)->college->id);
-        }
-
-        if(auth()->user()->isSuperAdministrator())
-        {
-            $this->college = collect([]);
-        }
-    }
 
     public function addProgram()
     {
@@ -66,21 +53,8 @@ class ProgramForm extends Component
         $this->programs = array_values($this->programs);
     }
 
-    public function validateUserSubmission()
-    {
-        if(auth()->user()->isAdministrator() && $this->college != auth()->user()->college_id)
-        {
-            return true;
-        }
-        return false;
-    }
-
     public function save()
     {
-        if($this->validateUserSubmission())
-        {
-            return redirect()->route('program.create')->with('message', 'Request Error');
-        };
         sleep(1);
         $this->validate();
         $college = College::findOrFail($this->college);

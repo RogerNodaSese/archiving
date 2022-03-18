@@ -8,6 +8,15 @@
     @endif
     <form wire:submit.prevent="addThesis" method="POST">
       @csrf
+      <div class="form-group row mb-2">
+        <label for="inputPassword" class="col-sm-2 col-form-label">Title</label>
+        <div class="col-sm-8 mb-2">
+          <input type="text" wire:model="title" class="form-control @error('title') border border-danger @enderror" wire:model.lazy="title" name="title" id="inputPassword" placeholder="Thesis title">
+          @error('title')
+              <small class="text-danger">{{ $message }}</small>
+          @enderror
+        </div>
+      </div>
         <div>
           @foreach ($authors as $index => $author)
           <div class="form-group row mb-2">
@@ -16,15 +25,22 @@
                   Author/s
                   @endif 
               </label>
-              <div class="col-sm-4 d-inline mb-2">
+              <div class="col-sm-3 d-inline mb-2">
                 <input type="text" wire:key="{{$loop->index}}" class="form-control @error('authors.'.$index.'.lastname') border border-danger @enderror" id="staticEmail"  wire:model.lazy="authors.{{$index}}.lastname" placeholder="Lastname">
                 @error('authors.'.$index.'.lastname')
                     <small class="text-danger">{{ $message }}</small>
                 @enderror
               </div>
-              <div class="col-sm-4 d-inline mb-2">
+              <div class="col-sm-3 d-inline mb-2">
                 <input type="text" wire:key="{{$loop->index}}" class="form-control @error('authors.'.$index.'.firstname') border border-danger @enderror " id="staticEmail" wire:model.lazy="authors.{{$index}}.firstname" placeholder="Firstname">
                 @error('authors.'.$index.'.firstname')
+                    <small class="text-danger">{{ $message }}</small>
+                @enderror
+              </div>
+              {{-- MIDDLE NAME --}}
+              <div class="col-sm-2 d-inline mb-2">
+                <input type="text" wire:key="{{$loop->index}}" class="form-control @error('authors.'.$index.'.middlename') border border-danger @enderror" id="staticEmail"  wire:model.lazy="authors.{{$index}}.middlename" placeholder="Middlename">
+                @error('authors.'.$index.'.middlename')
                     <small class="text-danger">{{ $message }}</small>
                 @enderror
               </div>
@@ -42,18 +58,18 @@
           
           @endforeach
           </div>
-        <div class="form-group row mb-2">
-          <label for="inputPassword" class="col-sm-2 col-form-label">Title</label>
-          <div class="col-sm-8 mb-2">
-            <input type="text" wire:model="title" class="form-control @error('title') border border-danger @enderror" wire:model.lazy="title" name="title" id="inputPassword" placeholder="Thesis title">
-            @error('title')
-                <small class="text-danger">{{ $message }}</small>
-            @enderror
+          <div class="form-group row mb-2">
+            <label for="inputPassword" class="col-sm-2 col-form-label">Publisher</label>
+            <div class="col-sm-8 mb-2">
+              <input type="text" wire:model="publisher" class="form-control @error('publisher') border border-danger @enderror" wire:model.lazy="publisher" name="publisher" id="inputPassword" placeholder="Ex. New Era University">
+              @error('publisher')
+                  <small class="text-danger">{{ $message }}</small>
+              @enderror
+            </div>
           </div>
-        </div>
         <div class="form-group row mb-2">
-            <label for="staticEmail" class="col-sm-2 col-form-label">Date of issue</label>
-            <div class="col-sm-3 d-inline mb-2">
+            <label for="staticEmail" class="col-sm-2 col-form-label">Date of publication</label>
+            <div class="col-sm-4 d-inline mb-2">
                 <select class="custom-select @error('month') border border-danger @enderror" wire:model="month" id="month">
                     <option value="" selected data-default>Month</option>
                     @foreach ($months as $index => $month)
@@ -64,7 +80,7 @@
                 <small class="text-danger">{{ $message }}</small>
             @enderror
             </div>
-            <div class="col-sm-2 d-inline mb-2">
+            {{-- <div class="col-sm-2 d-inline mb-2">
                 <select class="custom-select @error('day') border border-danger @enderror" wire:model="day" id="day">
                     <option value="" selected data-default>Day</option>
                     @foreach ($days as $day)
@@ -74,8 +90,8 @@
                 @error('day')
                 <small class="text-danger">{{ $message }}</small>
             @enderror
-            </div>
-            <div class="col-sm-3 d-inline mb-2">
+            </div> --}}
+            <div class="col-sm-4 d-inline mb-2">
                 <select class="custom-select @error('year') border border-danger @enderror" wire:model="year" id="year">
                     <option value="" selected data-default>Year</option>
                     @foreach ($years as $year)
@@ -90,7 +106,7 @@
         <div class="form-group row mb-2">
             <label for="inputPassword" class="col-sm-2 col-form-label">College</label>
             <div class="col-sm-8 mb-2">
-                <select class="custom-select @error('college') border border-danger @enderror" @if (auth()->user()->isAdministrator()) disabled @endif wire:model="college" id="college">
+                <select class="custom-select @error('college') border border-danger @enderror" wire:model="college" id="college">
                     <option value="">--College Department--</option>
                     @foreach ($colleges as $college) 
                         <option value="{{$college->id}}" id="{{$college->id}}">{{$college->description}}</option>
@@ -124,7 +140,7 @@
               @enderror
             </div>
           </div>
-          <div class="form-group row mb-2">
+          {{-- <div class="form-group row mb-2">
             <label for="inputPassword" class="col-sm-2 col-form-label">Keyword/s</label>
             <div class="col-sm-8 mb-2">
               <input type="text" class="form-control @error('keyword') border border-danger @enderror" wire:model.lazy="keyword" name="keywords" id="inputPassword" placeholder="ex: Archiving, Management">
@@ -133,7 +149,7 @@
                   <small class="text-danger">{{ $message }}</small>
               @enderror
             </div>
-          </div>
+          </div> --}}
           <div class="form-group row mb-2">
             <label for="inputPassword" class="col-sm-2 col-form-label">Suggested citation</label>
             <div class="col-sm-8 mb-2">

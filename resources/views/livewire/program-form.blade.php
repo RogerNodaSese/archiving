@@ -14,7 +14,7 @@
                 College name
           </label>
           <div class="col-8 col-md-8 col-lg-8 d-inline mb-2">
-            <select class="form-control" id="staticEmail" @if (auth()->user()->isAdministrator()) disabled @endif wire:model="college">
+            <select class="form-control" id="staticEmail" wire:model="college">
                 <option class="text-center" value="">---Select College---</option>
                 @forelse ($colleges as $college)
                 <option value="{{$college->id}}">{{$college->description}}</option>

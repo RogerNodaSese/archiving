@@ -9,7 +9,7 @@ class Role extends Model
 {
     use HasFactory;
 
-    public const SUPER_ADMIN = 1;
-    public const ADMIN = 2;
-    public const STUDENT = 3;
+    //REMOVE
+    public const ADMIN = 1;
+    public const STUDENT = 2;
 }

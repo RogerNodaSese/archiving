@@ -25,8 +25,7 @@ class TitleSearch extends Component
             'theses' => Thesis::select('id','title','program_id')->with(['program' => function($query){
                 $query->with(['college']);
             }])
-            ->where('verified', true)
-            ->where('title', 'LIKE', '%'.$this->search.'%')->orderBy('title')->paginate(5)
+            ->where('title', 'LIKE', '%'.$this->search.'%')->orderBy('title')->simplePaginate(10)
         ]);
     }
 }

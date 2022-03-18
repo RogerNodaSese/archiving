@@ -27,11 +27,12 @@ class RedirectIfAuthenticated
                 {
                     return redirect('archives');
                 }
+                //REMOVE
+                // if(Auth::user()->role_id == \App\Models\Role::ADMIN)
+                // {
+                //     return redirect('college');
+                // }
                 if(Auth::user()->role_id == \App\Models\Role::ADMIN)
-                {
-                    return redirect('college');
-                }
-                if(Auth::user()->role_id == \App\Models\Role::SUPER_ADMIN)
                 {
                     return redirect('library');
                 }

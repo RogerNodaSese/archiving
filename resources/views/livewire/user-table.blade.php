@@ -12,7 +12,7 @@
       <input type="text" class="form-control" wire:model="search" placeholder="Search">
     </div>
     {{-- START --}}
-    <div class="d-flex flex-row">
+    {{-- <div class="d-flex flex-row">
       <div class="col-6 col-md-6 col-lg-6">
     <div class="custom-control custom-switch">
       <input type="radio" class="custom-control-input" wire:model="role" value="1" id="customSwitch1">
@@ -25,7 +25,7 @@
       <label class="custom-control-label" for="customSwitch2">Student</label>
       </div>
     </div>
-  </div>
+  </div> --}}
   {{-- END --}}
   </div>
 <div class="container">

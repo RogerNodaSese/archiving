@@ -31,7 +31,7 @@ class CollegeController extends Controller
         $program = Program::select('id','description','slug')->where('slug',$program)->firstOrFail();
         $theses = Thesis::with(['authors' => function($query){
             $query->select('last_name','first_name');
-        }])->where('program_id',$program->id)->where('verified', true)->orderBy('date_of_issue','desc')->get();
+        }])->where('program_id',$program->id)->orderBy('title')->get();
         return view('student.program-archive',compact('college','program','theses'));
     }
 
@@ -41,7 +41,7 @@ class CollegeController extends Controller
             $query->with('college');
         }])->whereHas('keywords',function(\Illuminate\Database\Eloquent\Builder $query) use ($slug){
             $query->where('description', $slug);
-        })->where('verified', true)->paginate(20);
+        })->paginate(20);
         return view('student.keyword-archives', compact('theses','slug'));
     }
 }

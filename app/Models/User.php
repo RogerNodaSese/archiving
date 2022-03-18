@@ -57,11 +57,6 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsTo(Role::class);
     }
 
-    public function isSuperAdministrator()
-    {
-        return $this->role()->where('description','superadmin')->exists();
-    }
-
     public function isAdministrator()
     {
         return $this->role()->where('description','admin')->exists();

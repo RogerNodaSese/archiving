@@ -31,8 +31,8 @@ h2,h4{
 }
 
 .page-content{
-    width: calc(100% - 17rem);
-    margin-left: 17rem;
+    width: calc(100% - 13rem);
+    margin-left: 15rem;
     transition: all 0.4s;
 }
 

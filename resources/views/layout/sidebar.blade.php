@@ -5,24 +5,29 @@
 </div>
 
 
-@if (auth()->user()->role_id != \App\Models\Role::STUDENT)   
+@if(auth()->user()->role_id == \App\Models\Role::ADMIN)
 <p class="font-weight-bold text-uppercase px-3 small pb-4 mb-0 section">Dashboard</p> 
 <ul class="nav flex-column bg-white mb-0">
     <li class="nav-item">
-
-        @if(auth()->user()->role_id == \App\Models\Role::ADMIN)
-            <a href="/college" class="nav-link @if(\Request::routeIs('college.index'))bg-info text-white @else text-dark bg-light @endif">   
-        @else
             <a href="/library" class="nav-link @if(\Request::routeIs('library.index'))bg-info text-white @else text-dark bg-light @endif">    
-        @endif
             <span class="material-icons">
                 grid_view
             </span>
                 <small>Home</small>
         </a>
     </li>
-</ul>
-@endif
+    {{-- @if(auth()->user()->role_id == \App\Models\Role::STUDENT)
+        <li class="nav-item">
+            <a href="/library" class="nav-link @if(\Request::routeIs('library.index'))bg-info text-white @else text-dark bg-light @endif">    
+                <span class="material-icons">
+                    grid_view
+                </span>
+                <small>Home</small>
+            </a>
+        </li>
+        @endif --}}
+    </ul>
+    @endif
 
     <p class="font-weight-bold text-uppercase px-3 small pb-4 mb-0 mt-3 section">Contents</p>
     <ul class="nav flex-column bg-white mb-0">
@@ -34,7 +39,17 @@
                 <small>Archives</small>
             </a>
         </li>
-@if (auth()->user()->role_id == \App\Models\Role::SUPER_ADMIN)
+        @if(auth()->user()->role_id == \App\Models\Role::ADMIN)
+        <li class="nav-item">
+            <a href="{{route('archives.import')}}" class="nav-link @if(\Request::routeIs('archives.import'))bg-info text-white @else text-dark bg-light @endif">
+                <span class="material-icons">
+                    file_upload
+                </span>
+                <small>Import</small>
+            </a>
+        </li>
+        @endif
+{{-- @if (auth()->user()->role_id == \App\Models\Role::SUPER_ADMIN)
 
     <li class="nav-item">
             <a href="{{route('library.users')}}" class="nav-link @if(\Request::routeIs('library.users'))bg-info text-white @else text-dark bg-light @endif">
@@ -49,9 +64,9 @@
                     <span class="material-icons">
                         move_to_inbox
                     </span>
-                    <small>Archive Requests</small>
+                    <small>Archive Requests</small> --}}
                     {{-- only thesis to query --}}
-                    @php
+                    {{-- @php
                         $requestCount = \App\Models\Thesis::where('verified', false)->count();
                     @endphp
                     @if($requestCount > 0)
@@ -59,9 +74,9 @@
                     @endif
                 </a>
             </li>
-@endif
+@endif --}}
 
-@if(auth()->user()->role_id == \App\Models\Role::ADMIN)
+{{-- @if(auth()->user()->role_id == \App\Models\Role::ADMIN)
 <li class="nav-item">
     <a href="{{route('college.requests')}}" class="nav-link @if(\Request::routeIs('college.requests'))bg-info text-white @else text-dark bg-light @endif">
         <span class="material-icons">
@@ -80,7 +95,7 @@
         @endif
     </a>
 </li>
-@endif
+@endif --}}
 </ul>
 
 {{-- 
@@ -113,14 +128,14 @@
         </a>
     </li>
 
-    <li class="nav-item">
+    {{-- <li class="nav-item">
         <a href="{{route('student.keywords')}}" class="nav-link @if(\Request::routeIs('student.keywords'))bg-info text-white @else text-dark bg-light @endif">
             <span class="material-icons">
                 feed
             </span>
                 <small>Keywords</small>
         </a>
-    </li>
+    </li> --}}
 
     <li class="nav-item">
         <a href="{{route('student.subjects')}}" class="nav-link @if(\Request::routeIs('student.subjects'))bg-info text-white @else text-dark bg-light @endif">
