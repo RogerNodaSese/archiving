@@ -35,7 +35,7 @@
             </x-card.body>
             @endif
         <x-card.body style="background:#ffffff;" class="d-flex justify-content-center">
-            <form wire:submit.prevent="store" enctype="multipart/form-data">
+            <form wire:submit.prevent="store">
                 @csrf
                 <div class="form-group">
                     <span wire:loading.class="spinner-border spinner-border-sm"></span>
