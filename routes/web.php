@@ -40,7 +40,7 @@ Route::post('/email/resend-email-verification', [RegisterController::class, 'res
                 ->middleware(['throttle:verification'])->name('verification.resend');
 
 Route::get('/email/verify/{id}/{hash}', [RegisterController::class, 'emailVerification'])
-                ->middleware(['auth', 'signed'])->name('verification.verify');
+                ->middleware(['auth'])->name('verification.verify');
 
 Route::get('/resend-verification', function(){
     return view('auth.resend-verification');
