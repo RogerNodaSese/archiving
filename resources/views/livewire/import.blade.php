@@ -36,7 +36,7 @@
             @endif
         <x-card.body style="background:#ffffff;" class="d-flex justify-content-center">
             <form wire:submit.prevent="store">
-                @csrf
+            
                 <div class="form-group">
                     <span wire:loading.class="spinner-border spinner-border-sm"></span>
                     <input type="file" wire:model="file"/>
