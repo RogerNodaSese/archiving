@@ -32,5 +32,9 @@ class AppServiceProvider extends ServiceProvider
         // //         dd($subject->pivot);
         // //     }
         // }
+        \URL::forceRootUrl(\Config::get('app.url'));    
+        if (str_contains(\Config::get('app.url'), 'https://')) {
+        \URL::forceScheme('https');
+    }
     }
 }
