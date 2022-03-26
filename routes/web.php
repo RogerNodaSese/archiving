@@ -20,10 +20,12 @@ use App\Http\Controllers\ThesisExportController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
 Route::get('/', [LoginController::class, 'index'])->middleware('guest');
 Route::post('/', LoginController::class)->name('login');
 
+Route::get('/all', function(){
+    return \App\Models\Thesis::with(['subjects', 'authors'])->simplePaginate(20);
+});
 Route::get('/register', [RegisterController::class, 'index'])->middleware('guest');
 Route::post('/register', RegisterController::class)->name('register');
 
