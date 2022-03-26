@@ -226,7 +226,7 @@ class ThesisForm extends Component
 
         foreach ($subjects as $data) {
 
-            $subResult = Subject::where('description', '=', Str::of($data)->trim())->first();
+            $subResult = Subject::where('description', '=', Str::of(Str::lower($data))->trim())->first();
             if(is_null($subResult))
             {
                 $subject = new Subject();

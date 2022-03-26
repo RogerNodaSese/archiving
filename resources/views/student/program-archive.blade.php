@@ -32,4 +32,7 @@
     @empty
       <h1 class="display-4 mt-3">No archives found!</h1>
     @endforelse
+    <div class="container d-flex justify-content-center">
+      {{$theses->links()}}
+    </div>
 @endsection

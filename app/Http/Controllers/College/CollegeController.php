@@ -31,7 +31,7 @@ class CollegeController extends Controller
         $program = Program::select('id','description','slug')->where('slug',$program)->firstOrFail();
         $theses = Thesis::with(['authors' => function($query){
             $query->select('last_name','first_name');
-        }])->where('program_id',$program->id)->orderBy('title')->get();
+        }])->where('program_id',$program->id)->orderBy('title')->simplePaginate(15);
         return view('student.program-archive',compact('college','program','theses'));
     }
 

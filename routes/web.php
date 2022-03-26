@@ -78,7 +78,7 @@ Route::group(['middleware' => ['auth','verified']], function(){
                 $query->with('college');
             }])->whereHas('subjects',function(\Illuminate\Database\Eloquent\Builder $query) use ($slug){
                 $query->where('description', $slug);
-            })->paginate(20);
+            })->simplePaginate(20);
             return view('student.subject-archives', compact('theses','slug'));
         })->name('subject');
         Route::get('/title', function(){

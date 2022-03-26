@@ -100,7 +100,7 @@
 
 {{-- 
 @if (auth()->user()->role_id == \App\Models\Role::STUDENT) --}}
-<p class="font-weight-bold text-uppercase px-3 small pb-4 mb-0 mt-3 section">Filter</p>
+<p class="font-weight-bold text-uppercase px-3 small pb-4 mb-0 mt-3 section">Catalogue</p>
 
 <ul class="nav flex-column bg-white mb-0">
     <li class="nav-item">

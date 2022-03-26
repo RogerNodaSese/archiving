@@ -17,7 +17,6 @@ class Thesis extends Model
     
 
     protected $fillable = [
-        'user_id',
         'title',
         'publisher',
         'date_of_publication',
