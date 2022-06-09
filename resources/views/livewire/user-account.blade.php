@@ -28,7 +28,7 @@
           @enderror
         </div>
     </div>
-    <div class="form-group row mb-2">
+    {{-- <div class="form-group row mb-2">
         <label for="inputPassword" class="col-sm-2 col-form-label">College</label>
         <div class="col-sm-8 mb-2">
             <select class="custom-select" id="college" wire:model = "college">
@@ -43,7 +43,7 @@
             <small class="text-danger">{{ $message }}</small>
             @enderror
         </div>
-    </div>
+    </div> --}}
     <div class="form-group row mb-2">
         <label for="password" class="col-sm-2 col-form-label">Password</label>
         <div class="col-sm-8 mb-2">

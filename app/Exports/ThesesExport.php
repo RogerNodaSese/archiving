@@ -17,12 +17,13 @@ class ThesesExport implements WithHeadings, WithColumnWidths, WithStyles
     {
         return [
             'Title',
-            'Authors',
+            'Author/s (Lastname, Firstname, Middle Initial;)',
             'Publisher',
             'Date of publication',
             'College program',
-            'Subject',
-            'Abstract'
+            'Subject/s',
+            'Abstract',
+            'Symbol (Undergrad/Grad)'
         ];
     }
 
@@ -36,6 +37,7 @@ class ThesesExport implements WithHeadings, WithColumnWidths, WithStyles
             'E' => 45,
             'F' => 45,
             'G' => 45,        
+            'H' => 45,        
         ];
     }
 
@@ -50,6 +52,7 @@ class ThesesExport implements WithHeadings, WithColumnWidths, WithStyles
             'E1'    => ['font' => ['bold' => true]],
             'F1'    => ['font' => ['bold' => true]],
             'G1'    => ['font' => ['bold' => true]],
+            'H1'    => ['font' => ['bold' => true]],
         ];
     }
 }

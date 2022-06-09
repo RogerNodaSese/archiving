@@ -2,10 +2,16 @@
 
 @section('header')
 <h2 class="display-5 col-12 col-md-12 col-lg-12 text-center mb-3">{{$thesis->title}}</h2>
+@if(auth()->user()->isAdministrator())
+<h5 class="added-by col-12 col-md-12 col-lg-12 text-center text-muted">Archived by: <span class="added-by">{{$thesis->user->first_name}} {{$thesis->user->last_name}}</span></h5>
+@endif
 @endsection
 
 @push('styles')
     <style>
+        .added-by{
+            font-size: .9rem;
+        }
         .link:visited{
             color:purple;
         }
@@ -98,6 +104,8 @@
                 </div>
             </div>
         </div>
+        
+        
         <div class="d-flex flex-row mt-4">
             <div class="col-12 col-md-6 col-lg-6">
                 <div class="d-flex flex-column">
@@ -134,12 +142,47 @@
                 </div>
             </div>
 
-            @if((auth()->user()->isAdministrator()) && !is_null($thesis->file))
+            @if(!is_null($thesis->file))
             <div class="col-12 col-md-6 col-lg-6">
                 <div class="d-flex flex-column">
                     <label class="col-12 col-lg-12" for="file">File:</label>
                     <p class="col-12 col-lg-12" id="file">
                         <a class="link" href="{{route('file', $thesis->id)}}">{{$thesis->file->description}}.pdf</a>
+                    </p>
+                </div>
+            </div>
+            
+            @elseif(is_null($thesis->file) && auth()->user()->isAdministrator())
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="d-flex flex-column">
+                    <label class="col-12 col-lg-12" for="file">File:</label>
+                    <p class="col-12 col-lg-12 text-danger" id="file">
+                        No file found
+                        <button type="button" data-toggle="modal" data-target="#open" class="btn btn-success btn-sm">Upload</button>
+                        <form action="{{route('archives.update', $thesis->id)}}" method="POST" enctype="multipart/form-data">
+                            @method('PUT')
+                            @csrf
+                        <div class="modal fade" id="open" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLongTitle">Upload PDF document</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                    </button>
+                                  </div>
+                                  <div class="modal-body">
+                                   <input type="file" name="file" class="form-control-file"/>
+                                   <span class="text-danger"> @error('file') {{ $message }} @enderror</span>
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-success">Upload</button>
+                                  </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                     </p>
                 </div>
             </div>
@@ -149,13 +192,11 @@
                     <label class="col-12 col-lg-12" for="file">File:</label>
                     <p class="col-12 col-lg-12 text-danger" id="file">
                         No file found
-                        <button class="btn btn-success btn-sm">Upload</button>
                     </p>
                 </div>
             </div>
             @endif
         </div>
-
         {{-- @if(auth()->user()->isSuperAdministrator() || $thesis->program->college_id == auth()->user()->college_id)
         <div class="d-flex flex-row mt-4">
             <div class="col-12 col-md-6 col-lg-6">
@@ -187,7 +228,6 @@
                 </div>
             </div>
         </div>
-       
         <div class="d-flex flex-row mt-4">
             <div class="col-12 col-md-12 col-lg-12">
                 <div class="d-flex flex-column">

@@ -10,6 +10,8 @@ use App\Http\Controllers\College\CollegeController;
 use App\Http\Controllers\Library\LibraryController;
 use App\Http\Controllers\ThesisImportController;
 use App\Http\Controllers\ThesisExportController;
+use App\Http\Controllers\FileController;
+use Maatwebsite\Excel\Facades\Excel;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -22,10 +24,12 @@ use App\Http\Controllers\ThesisExportController;
 */
 Route::get('/', [LoginController::class, 'index'])->middleware('guest');
 Route::post('/', LoginController::class)->name('login');
-
-Route::get('/all', function(){
-    return \App\Models\Thesis::with(['subjects', 'authors'])->simplePaginate(20);
-});
+// Route::get('/test', function(){
+//     return Excel::download(new \App\Exports\ThesisExport, 'generated-data.xlsx');
+// });
+// Route::get('/all', function(){
+//     return \App\Models\Thesis::with(['subjects', 'authors'])->simplePaginate(20);
+// });
 Route::get('/register', [RegisterController::class, 'index'])->middleware('guest');
 Route::post('/register', RegisterController::class)->name('register');
 
@@ -49,16 +53,37 @@ Route::get('/resend-verification', function(){
 })->middleware(['throttle:verification','guest'])->name('resend');
 
 
+
+
 Route::group(['middleware' => ['auth','verified']], function(){
 
     Route::group(['middleware' => 'role:admin', 'prefix' => 'archives', 'as' => 'archives.'], function(){
         Route::get('/import', [ThesisImportController::class, 'index'])->name('import');
         Route::post('/import', [ThesisImportController::class, 'store'])->name('store');
         Route::get('/export', [ThesisExportController::class, 'export'])->name('export');
+        Route::put('/update/{id}', [FileController::class, 'update'])->name('update');
+    });
+
+    Route::group(['middleware' => 'role:staff', 'prefix' => 'staff', 'as' => 'staff.'], function(){
+        Route::get('/', function(){
+            $college = \App\Models\College::select('description')->where('id', auth()->user()->college_id)->first();
+            $thesisAddedToday = \App\Models\Thesis::whereDate('created_at', \Carbon\Carbon::now())->whereBelongsTo(auth()->user())->count();
+            $thesisTotal = \App\Models\Thesis::whereBelongsTo(auth()->user())->count();
+            $addedThesis = \App\Models\Thesis::whereBelongsTo(auth()->user())->simplePaginate(10);
+            $recentlyAdded = \App\Models\Thesis::with('program')->whereDate('created_at', \Carbon\Carbon::now())->whereBelongsTo(auth()->user())->simplePaginate(10);
+            $department = \App\Models\User::with(['college'])->where('id', auth()->user()->id)->first();
+            return view('staff.dashboard')->with(['college' => $college, 'recentAdded' => $thesisAddedToday, 'total' => $thesisTotal, 'recent' => $recentlyAdded, 'addedThesis' => $addedThesis]);
+        })->name('index');
+    });
+    //Routes for admin and staff
+    Route::group(['middleware' => 'role:admin,staff', 'as' => 'library.'], function(){
+        Route::get('/thesis/create', function(){
+            return view('library.form.thesis');
+        })->name('thesis.create');
     });
 
     //Routes for Student
-    Route::group(['middleware' => 'role:student,admin', 'prefix' => 'archives', 'as' => 'student.'], function(){
+    Route::group(['middleware' => 'role:student,admin,staff', 'prefix' => 'archives', 'as' => 'student.'], function(){
         Route::get('/', [StudentController::class , 'index'])->name('index');
         Route::get('/colleges', function(){
             return view('library.colleges');
@@ -80,7 +105,7 @@ Route::group(['middleware' => ['auth','verified']], function(){
                 $query->with('college');
             }])->whereHas('subjects',function(\Illuminate\Database\Eloquent\Builder $query) use ($slug){
                 $query->where('description', $slug);
-            })->simplePaginate(20);
+            })->orderBy('title')->simplePaginate(20);
             return view('student.subject-archives', compact('theses','slug'));
         })->name('subject');
         Route::get('/title', function(){
@@ -89,7 +114,7 @@ Route::group(['middleware' => ['auth','verified']], function(){
         Route::get('/{slug}', [CollegeController::class, 'collegeArchives'])->name('college');
         Route::get('/{slug}/{program}',[CollegeController::class, 'programArchive'])->name('program');
         Route::get('/{slug}/{program}/{archive}', function($slug,$program,$archive){
-            $thesis = \App\Models\Thesis::with(['authors','subjects','file'])->findOrFail($archive);
+            $thesis = \App\Models\Thesis::with(['authors', 'user' ,'subjects','file'])->findOrFail($archive);
             $college = \App\Models\College::where('slug',$slug)->firstOrFail();
             $program = \App\Models\Program::where('slug',$program)->firstOrFail();
             $date = \Carbon\Carbon::createFromFormat('Y-m', $thesis->date_of_publication)->format('F Y');
@@ -103,49 +128,49 @@ Route::group(['middleware' => ['auth','verified']], function(){
         })->name('archive');
     });
     //Routes for Admin
-    Route::group(['middleware' => 'role:admin', 'prefix' => 'college', 'as' => 'college.'], function(){
-        Route::get('/', [CollegeController::class , 'index'])->name('index');
-    });
+    // Route::group(['middleware' => 'role:admin', 'prefix' => 'college', 'as' => 'college.'], function(){
+    //     Route::get('/', [CollegeController::class , 'index'])->name('index');
+    // });
 
-    Route::group(['middleware' => 'role:admin', 'as' => 'college.'], function(){
-        Route::get('/request', function(){
-            $theses = \App\Models\Thesis::whereRelation('program', 'college_id', auth()->user()->college_id)->withTrashed()->get();
-            return view('college.requests', compact('theses'));
-        })->name('requests');
-        Route::get('/request/view/{id}', function($id){
-            $thesis = \App\Models\Thesis::whereRelation('program', 'college_id', auth()->user()->college_id)->with(['program' => function($query){
-                $query->with(['college' => function($query) {
-                    $query->select('id','description');
-                }]);
-            },'authors','subjectsWithTrashed','keywordsWithTrashed'])->withTrashed()->findOrFail($id);
-            // $dateFormatted = \Carbon\Carbon::createFromFormat('Y-m-d', $thesis->date_of_issue );
-            // $date = [
-            //     'month' => $dateFormatted->format('F'),
-            //     'day' => $dateFormatted->format('d'),
-            //     'year' => $dateFormatted->format('Y'),
-            // ];
-            $file_size = \Illuminate\Support\Facades\Storage::disk('google')->size($thesis->file->path);
-            $kb = round($file_size / 1024);
+    // Route::group(['middleware' => 'role:admin', 'as' => 'college.'], function(){
+    //     Route::get('/request', function(){
+    //         $theses = \App\Models\Thesis::whereRelation('program', 'college_id', auth()->user()->college_id)->withTrashed()->get();
+    //         return view('college.requests', compact('theses'));
+    //     })->name('requests');
+    //     Route::get('/request/view/{id}', function($id){
+    //         $thesis = \App\Models\Thesis::whereRelation('program', 'college_id', auth()->user()->college_id)->with(['program' => function($query){
+    //             $query->with(['college' => function($query) {
+    //                 $query->select('id','description');
+    //             }]);
+    //         },'authors','subjectsWithTrashed','keywordsWithTrashed'])->withTrashed()->findOrFail($id);
+    //         // $dateFormatted = \Carbon\Carbon::createFromFormat('Y-m-d', $thesis->date_of_issue );
+    //         // $date = [
+    //         //     'month' => $dateFormatted->format('F'),
+    //         //     'day' => $dateFormatted->format('d'),
+    //         //     'year' => $dateFormatted->format('Y'),
+    //         // ];
+    //         $file_size = \Illuminate\Support\Facades\Storage::disk('google')->size($thesis->file->path);
+    //         $kb = round($file_size / 1024);
 
-            return view('college.view', compact('thesis'))->with('kb', $kb);
-        })->name('requests.view');
+    //         return view('college.view', compact('thesis'))->with('kb', $kb);
+    //     })->name('requests.view');
 
-        Route::put('/request/submit/{id}', function($id){
-            $thesis = \App\Models\Thesis::whereRelation('program', 'college_id', auth()->user()->college_id)->with(['subjectsWithTrashed','keywordsWithTrashed'])->withTrashed()->findOrFail($id);
-            // $subjects = \App\Models\SubjectThesis::where('thesis_id', $thesis->id)->get();
-            // $keywords = \App\Models\KeywordThesis::where('thesis_id', $thesis->id)->get();
-            $thesis->restore();
-            foreach($thesis->subjectsWithTrashed as $subject){
-                $thesis->subjects()->updateExistingPivot($subject, ['deleted_at' => NULL]);
-            }
+    //     Route::put('/request/submit/{id}', function($id){
+    //         $thesis = \App\Models\Thesis::whereRelation('program', 'college_id', auth()->user()->college_id)->with(['subjectsWithTrashed','keywordsWithTrashed'])->withTrashed()->findOrFail($id);
+    //         // $subjects = \App\Models\SubjectThesis::where('thesis_id', $thesis->id)->get();
+    //         // $keywords = \App\Models\KeywordThesis::where('thesis_id', $thesis->id)->get();
+    //         $thesis->restore();
+    //         foreach($thesis->subjectsWithTrashed as $subject){
+    //             $thesis->subjects()->updateExistingPivot($subject, ['deleted_at' => NULL]);
+    //         }
 
-            foreach($thesis->keywordsWithTrashed as $keyword){
-                $thesis->keywords()->updateExistingPivot($keyword->id, ['deleted_at' => NULL]);
-            }
+    //         foreach($thesis->keywordsWithTrashed as $keyword){
+    //             $thesis->keywords()->updateExistingPivot($keyword->id, ['deleted_at' => NULL]);
+    //         }
         
-            return redirect('/request')->with('submitted', 'Submitted successfully!');
-        })->name('requests.submit');
-    });
+    //         return redirect('/request')->with('submitted', 'Submitted successfully!');
+    //     })->name('requests.submit');
+    // });
     //Routes for Super-admin
     Route::group(['middleware' => 'role:admin', 'prefix' => 'library', 'as' => 'library.'], function(){
         Route::get('/', [LibraryController::class , 'index'])->name('index');
@@ -157,6 +182,29 @@ Route::group(['middleware' => ['auth','verified']], function(){
         Route::get('/college/create', function(){
             return view('library.form.college');
         })->name('college.create');
+
+        Route::get('/staff/create', function(){
+            return view('library.form.staff-acc');
+        });
+        Route::get('/activity/staff', function(){
+            // $staffAdded = \App\Models\User::where('role_id', 3)->with(['theses' => function($query){
+            //     $query->with(['program' => function($q) {
+            //         $q->with(['college']);
+            //     }]);
+            // }])->get();
+            $staffAddedToday = \App\Models\User::where('role_id', 3)->withCount(['theses','theses as theses_added_today' => function($query){
+                $query->whereDate('created_at',\Carbon\Carbon::now());
+            }])->simplePaginate(10);
+            return view('library.staff-activity')->with(['staffAddedToday' => $staffAddedToday]);
+        })->name('staff-activity');
+
+        Route::get('/activity/staff/{id}', function($id){
+            $user = \App\Models\User::find($id);
+            $theses = \App\Models\Thesis::with(['program' => function($query){
+                $query->with('college');
+            }])->whereBelongsTo($user)->orderBy('created_at', 'desc')->simplePaginate(10);
+            return view('library.staff-log')->with(['user' => $user, 'theses' => $theses]);
+        })->name('staff.log');
         // Route::get('/archive-requests', function(){
         //     $theses = \App\Models\Thesis::with(['program' => function($query){
         //         $query->with('college');
@@ -226,9 +274,6 @@ Route::group(['middleware' => ['auth','verified']], function(){
 
             
         })->name('file');
-        Route::get('/thesis/create', function(){
-            return view('library.form.thesis');
-        })->name('thesis.create');
         Route::get('/program/create', function(){
             return view('library.form.program');
         })->name('program.create');

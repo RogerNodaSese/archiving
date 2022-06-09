@@ -24,6 +24,7 @@ class ThesisForm extends Component
 {
     use WithFileUploads;
 
+    // public $accession;
     public $authors = [];
     public $title;
     public $month;
@@ -60,7 +61,8 @@ class ThesisForm extends Component
         'subject'               => 'required',
         'citation'              => ['required'],
         'abstract'              => ['required'],
-        'file'                  => 'nullable|file|mimes:pdf|min:100|max:16000',
+        'file'                  => 'nullable|file|mimes:pdf',
+        // 'accession'             => 'required|numeric|unique:theses,accession_number'
         ];
     }
 
@@ -75,8 +77,9 @@ class ThesisForm extends Component
         'program.required'              => 'Program required.',
         'subject.required'              => 'Subject required.',
         'abstract.required'             => 'Abstract required.',
-        'file.min'                      => 'The file must be at least 1MB.',
-        'file.max'                      => 'The file size exceeded to 16MB.'
+        // 'file.min'                      => 'The file must be at least 1MB.',
+        // 'file.max'                      => 'The file size exceeded to 16MB.',
+        // 'accession.numeric'             => 'Field must only contain numeric value'
     ];
     public function mount()
     {
@@ -91,20 +94,14 @@ class ThesisForm extends Component
         // $this->authorizedUser();
     }
 
-    // public function authorizedUser()
-    // {
-    //     if(auth()->user()->isAdministrator())
-    //     {
-    //         $this->college = strval(User::find(auth()->user()->id)->college->id);
-    //         $this->programs = College::find($this->college)->programs;
-    //     }
-
-    //     if(auth()->user()->isSuperAdministrator())
-    //     {
-    //         $this->college = collect([]);
-    //         $this->programs = collect([]);
-    //     }
-    // }
+    public function authorizedUser()
+    {
+        if(auth()->user()->isStaff())
+        {
+            $this->college = strval(User::find(auth()->user()->id)->college->id);
+            $this->programs = College::find($this->college)->programs;
+        }
+    }
 
     public function updatedCollege($college)
     {
@@ -190,6 +187,8 @@ class ThesisForm extends Component
 
         $thesis = Thesis::create([
             'title'         => $this->title,
+            // 'accession_number' => $this->accession,
+            'user_id'       => auth()->user()->id,
             'publisher'     => $this->publisher,
             'date_of_publication' => $this->publication,
             'citation'      => $this->citation,

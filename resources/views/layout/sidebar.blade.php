@@ -29,6 +29,20 @@
     </ul>
     @endif
 
+    @if(auth()->user()->role_id == \App\Models\Role::STAFF)
+<p class="font-weight-bold text-uppercase px-3 small pb-4 mb-0 section">Dashboard</p> 
+<ul class="nav flex-column bg-white mb-0">
+    <li class="nav-item">
+            <a href="/staff" class="nav-link @if(\Request::routeIs('staff.index'))bg-info text-white @else text-dark bg-light @endif">    
+            <span class="material-icons">
+                grid_view
+            </span>
+                <small>Home</small>
+        </a>
+    </li>
+    </ul>
+    @endif
+
     <p class="font-weight-bold text-uppercase px-3 small pb-4 mb-0 mt-3 section">Contents</p>
     <ul class="nav flex-column bg-white mb-0">
         <li class="nav-item">
@@ -39,13 +53,23 @@
                 <small>Archives</small>
             </a>
         </li>
-        @if(auth()->user()->role_id == \App\Models\Role::ADMIN)
+        {{-- @if(auth()->user()->role_id == \App\Models\Role::ADMIN)
         <li class="nav-item">
             <a href="{{route('archives.import')}}" class="nav-link @if(\Request::routeIs('archives.import'))bg-info text-white @else text-dark bg-light @endif">
                 <span class="material-icons">
                     file_upload
                 </span>
                 <small>Import</small>
+            </a>
+        </li>
+        @endif --}}
+        @if(auth()->user()->role_id == \App\Models\Role::ADMIN)
+        <li class="nav-item">
+            <a href="/activity/staff" class="nav-link @if(\Request::routeIs('library.staff-activity'))bg-info text-white @else text-dark bg-light @endif">
+                <span class="material-icons">
+                    group
+                </span>
+                <small>Staff Activity</small>
             </a>
         </li>
         @endif

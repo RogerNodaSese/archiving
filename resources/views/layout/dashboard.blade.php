@@ -18,9 +18,9 @@
             <div class="row">
             @yield('header') 
             <div class="col-md-2 col-lg-2 ml-auto" style="">
-                @if (auth()->user()->role_id == \App\Models\Role::ADMIN)
+                @if (auth()->user()->role_id == \App\Models\Role::ADMIN || auth()->user()->role_id == \App\Models\Role::STAFF)
                     @if(\Request::routeIs('student.*') && !(\Request::routeIs('student.colleges') || \Request::routeIs('student.programs')))
-                        <a href="{{route('thesis.create')}}" class="btn btn-success" id="inputPassword">Create Archive</a>
+                        <a href="{{route('library.thesis.create')}}" class="btn btn-success" id="inputPassword">Create Archive</a>
                     @elseif(\Request::routeIs('student.colleges'))
                         <a href="{{route('library.college.create')}}" class="btn btn-success" id="inputPassword">+ Add College</a>
                     @elseif(\Request::routeIs('student.programs'))

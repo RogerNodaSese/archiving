@@ -51,10 +51,10 @@ class LoginController extends Controller
         {
             return redirect()->route('library.index');
         }
-        // if(auth()->user()->role_id == Role::SUPER_ADMIN)
-        // {
-        //     return redirect()->route('library.index');
-        // } 
+        if(auth()->user()->role_id == Role::STAFF)
+        {
+            return redirect()->route('staff.index');
+        } 
     }
 
 }

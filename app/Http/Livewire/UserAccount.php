@@ -15,23 +15,23 @@ class UserAccount extends Component
     public $email;
     public $password;
     public $password_confirmation;
-    public $college;
-    public $colleges;
+    // public $college;
+    // public $colleges;
 
     protected function rules()  {
         return [
             'firstname' => ['required','min:3'],
             'lastname' => ['required','min:2'],
             'email' => ['email','unique:users,email','regex:/^[A-Za-z0-9\.]*@(neu)[.](edu)[.](ph)$/'],
-            'college' => ['required'],
+            // 'college' => ['required'],
             'password' => ['required','confirmed', Password::min(8)],
         ];
     }
 
-    public function mount()
-    {
-        $this->colleges = College::all();
-    }
+    // public function mount()
+    // {
+    //     $this->colleges = College::all();
+    // }
 
     public function create()
     {
@@ -42,8 +42,8 @@ class UserAccount extends Component
            'last_name' =>  $this->lastname,
            'email' => $this->email,
            'password' => \Illuminate\Support\Facades\Hash::make($this->password),
-           'college_id' => $this->college,
-           'role_id' => 2,
+        //    'college_id' => $this->college,
+           'role_id' => 3,
        ]);
        $user->markEmailAsVerified();
     }, 3);
@@ -52,7 +52,7 @@ class UserAccount extends Component
         'icon' => 'success',
         'title' => 'Created Successfully!',
     ]);
-    $this->reset(['firstname','lastname','email','password','college','password_confirmation']);
+    $this->reset(['firstname','lastname','email','password','password_confirmation']);
     
     }
 

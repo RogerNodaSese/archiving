@@ -16,8 +16,9 @@ class CreateThesesTable extends Migration
         Schema::create('theses', function (Blueprint $table) {
             $table->id();
             //REMOVE
-            // $table->foreignId('user_id')->constrained('users');
-            $table->string('title');
+            $table->foreignId('user_id')->constrained('users');
+            // $table->string('accession_number')->unique();
+            $table->string('title')->unique();
             //Changed to dop
             $table->string('date_of_publication');
             $table->string('publisher')->default('New Era University');

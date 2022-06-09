@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
+use Maatwebsite\Excel\Imports\HeadingRowFormatter;
+use Illuminate\Support\Str;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -36,5 +38,12 @@ class AppServiceProvider extends ServiceProvider
         {
             \URL::forceScheme('https');
         }
+
+        HeadingRowFormatter::extend('custom', function($value, $key) {
+            return Str::slug(explode(' ',$value)[0], '-');
+        });
+
+        HeadingRowFormatter::default('custom');
+        
     }
 }

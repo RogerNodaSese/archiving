@@ -14,7 +14,7 @@ class ThesisSeeder extends Seeder
      */
     public function run()
     {
-        $theses = Thesis::factory()->count(1000)->create();
+        $theses = Thesis::factory()->count(5000)->create();
 
         foreach(Thesis::all() as $thesis)
         {

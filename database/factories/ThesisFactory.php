@@ -18,6 +18,8 @@ class ThesisFactory extends Factory
     {
         return [
             'title' => $this->faker->sentence(),
+            // 'accession_number' => $this->faker->randomNumber(9),
+            'user_id' => 1,
             'publisher' => 'New Era University',
             'date_of_publication' => $this->faker->date('Y-m'),
             'abstract' => $this->faker->paragraph(5),

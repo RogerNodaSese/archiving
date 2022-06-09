@@ -17,6 +17,15 @@
           @enderror
         </div>
       </div>
+      {{-- <div class="form-group row mb-2">
+        <label for="inputPassword" class="col-sm-2 col-form-label">Accession number</label>
+        <div class="col-sm-8 mb-2">
+          <input type="text" class="form-control @error('accession') border border-danger @enderror" wire:model.lazy="accession" name="accession" id="inputPassword" placeholder="Thesis accession number">
+          @error('accession')
+              <small class="text-danger">{{ $message }}</small>
+          @enderror
+        </div>
+      </div> --}}
         <div>
           @foreach ($authors as $index => $author)
           <div class="form-group row mb-2">
@@ -39,7 +48,7 @@
               </div>
               {{-- MIDDLE NAME --}}
               <div class="col-sm-2 d-inline mb-2">
-                <input type="text" wire:key="{{$loop->index}}" class="form-control @error('authors.'.$index.'.middlename') border border-danger @enderror" id="staticEmail"  wire:model.lazy="authors.{{$index}}.middlename" placeholder="Middlename">
+                <input type="text" wire:key="{{$loop->index}}" class="form-control @error('authors.'.$index.'.middlename') border border-danger @enderror" id="staticEmail"  wire:model.lazy="authors.{{$index}}.middlename" placeholder="Middle initial">
                 @error('authors.'.$index.'.middlename')
                     <small class="text-danger">{{ $message }}</small>
                 @enderror

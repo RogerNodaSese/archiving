@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\College;
 use App\Models\Role;
+use App\Models\Thesis;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -24,7 +25,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'last_name',
         'email',
         'password',
-        'college_id',
+        // 'college_id',
         'role_id'
     ];
 
@@ -47,6 +48,11 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];
 
+    public function theses()
+    {
+        return $this->hasMany(Thesis::class);
+    }
+
     public function college()
     {
         return $this->belongsTo(College::class);
@@ -65,5 +71,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function isStudent()
     {
         return $this->role()->where('description','student')->exists();
+    }
+
+    public function isStaff()
+    {
+        return $this->role()->where('description','staff')->exists();
     }
 }

@@ -12,4 +12,5 @@ class Role extends Model
     //REMOVE
     public const ADMIN = 1;
     public const STUDENT = 2;
+    public const STAFF = 3;
 }

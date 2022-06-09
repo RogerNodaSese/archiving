@@ -36,6 +36,11 @@ class RedirectIfAuthenticated
                 {
                     return redirect('library');
                 }
+
+                if(Auth::user()->role_id == \App\Models\Role::STAFF)
+                {
+                    return redirect('staff');
+                }
             }
         }
 

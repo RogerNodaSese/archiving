@@ -56,7 +56,7 @@ class ProgramSearch extends Component
             ->orWhere('description', 'LIKE', '%'.$this->search.'%')
             ->orWhere('slug', 'LIKE', '%'.$this->search.'%')
             ->orderBy('theses_count','desc')
-            ->paginate(10)
+            ->simplePaginate(10)
         ]);
     }
 }

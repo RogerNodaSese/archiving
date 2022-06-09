@@ -10,6 +10,7 @@ use App\Models\Author;
 use App\Models\Program;
 use App\Models\File;
 use App\Models\SubjectThesis;
+use App\Models\User;
 
 class Thesis extends Model
 {
@@ -18,6 +19,8 @@ class Thesis extends Model
 
     protected $fillable = [
         'title',
+        // 'accession_number',
+        'user_id',
         'publisher',
         'date_of_publication',
         'abstract',
@@ -25,6 +28,11 @@ class Thesis extends Model
         'citation',
         'file_id'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function keywords()
     {

@@ -29,6 +29,9 @@ class CheckRole
             if($role == 'student' && auth()->user()->role_id == Role::STUDENT ){
                 return $next($request);
             }    
+            if($role == 'staff' && auth()->user()->role_id == Role::STAFF ){
+                return $next($request);
+            }    
         }
         return abort(403);
     }
