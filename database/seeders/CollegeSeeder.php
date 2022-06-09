@@ -31,9 +31,8 @@ class CollegeSeeder extends Seeder
             ['id' => 14, 'description' => 'College of Nursing', 'slug' => 'college-of-nursing', 'created_at' => \Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now()],
             ['id' => 15, 'description' => 'College of Physical Therapy', 'slug' => 'college-of-physical-therapy', 'created_at' => \Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now()],
             ['id' => 16, 'description' => 'College of Respiratory Therapy', 'slug' => 'college-of-respiratory-therapy', 'created_at' => \Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now()],
-            ['id' => 18, 'description' => 'College of Medicine', 'slug' => 'college-of-medicine', 'created_at' => \Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now()],
-            ['id' => 19, 'description' => 'College of Law', 'slug' => 'college-of-law', 'created_at' => \Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now()],
-            ['id' => 20, 'description' => 'Graduate School of Education', 'slug' => 'graduate-school-of-education', 'created_at' => \Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now()],
+            ['id' => 17, 'description' => 'College of Medicine', 'slug' => 'college-of-medicine', 'created_at' => \Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now()],
+            ['id' => 18, 'description' => 'College of Law', 'slug' => 'college-of-law', 'created_at' => \Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now()],
         ]);
     }
 }

@@ -16,28 +16,12 @@ class UserSeeder extends Seeder
     {
         DB::table('users')->insert([
             [
-                "last_name" => "Alip",
-                "first_name" => "Alaysa",
+                "last_name" => "Ofelia",
+                "first_name" => "Galang",
                 "email" => "library@neu.edu.ph",
                 "email_verified_at" => \Carbon\Carbon::now(),
                 "password" => \Illuminate\Support\Facades\Hash::make("secret"),
                 "role_id" => 1
-            ],
-            [
-                "last_name" => "Sese",
-                "first_name" => "Roger",
-                "email" => "roger.sese@neu.edu.ph",
-                "email_verified_at" => \Carbon\Carbon::now(),
-                "password" => \Illuminate\Support\Facades\Hash::make("secret"),
-                "role_id" => 2
-            ],
-            [
-                "last_name" => "Castro",
-                "first_name" => "Danna",
-                "email" => "danna.castro@neu.edu.ph",
-                "email_verified_at" => \Carbon\Carbon::now(),
-                "password" => \Illuminate\Support\Facades\Hash::make("secret"),
-                "role_id" => 3
             ],
         ]);
     }
