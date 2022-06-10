@@ -185,7 +185,7 @@ Route::group(['middleware' => ['auth','verified']], function(){
 
         Route::get('/staff/create', function(){
             return view('library.form.staff-acc');
-        });
+        })->name('staff.create');
         Route::get('/activity/staff', function(){
             // $staffAdded = \App\Models\User::where('role_id', 3)->with(['theses' => function($query){
             //     $query->with(['program' => function($q) {

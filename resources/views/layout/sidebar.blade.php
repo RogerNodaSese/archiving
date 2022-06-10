@@ -69,7 +69,7 @@
                 <span class="material-icons">
                     group
                 </span>
-                <small>Staff Activity</small>
+                <small>Staffs</small>
             </a>
         </li>
         @endif

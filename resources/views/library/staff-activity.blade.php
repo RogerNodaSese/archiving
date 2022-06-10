@@ -1,7 +1,7 @@
 @extends('layout.dashboard')
 
 @section('header')
-    <h2 class="display-5 col-md-9 col-lg-9">Activity Logs</h2>
+    <h2 class="display-5 col-md-9 col-lg-9">List of Staffs</h2>
 @endsection
 @section('contents')
 <table class="table table-striped">

@@ -25,6 +25,8 @@
                         <a href="{{route('library.college.create')}}" class="btn btn-success" id="inputPassword">+ Add College</a>
                     @elseif(\Request::routeIs('student.programs'))
                         <a href="{{route('program.create')}}" class="btn btn-success" id="inputPassword">+ Add Programs</a>
+                    @elseif(\Request::routeIs('library.staff-activity'))
+                        <a href="{{route('library.staff.create')}}" class="btn btn-success" id="inputPassword">+ Add Staff</a>
                     @endif
                 @endif
                 @if (auth()->user()->role_id == \App\Models\Role::ADMIN)
