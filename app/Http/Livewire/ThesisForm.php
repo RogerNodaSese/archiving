@@ -33,6 +33,7 @@ class ThesisForm extends Component
     // public $days = [];
     public $year;
     public $years = [];
+    public $placeOfPublication;
     public $publisher;
     public $publication;
     public $college;
@@ -62,21 +63,25 @@ class ThesisForm extends Component
         'citation'              => ['required'],
         'abstract'              => ['required'],
         'file'                  => 'nullable|file|mimes:pdf',
+        'placeOfPublication'    => 'required',
+        'publisher'             => 'required'
         // 'accession'             => 'required|numeric|unique:theses,accession_number'
         ];
     }
 
     protected $messages = [
-        'authors.*.firstname.required'  => 'Firstname required.',
-        'authors.*.lastname.required'   => 'Lastname required.',
+        'authors.*.firstname.required'  => 'Firstname is required.',
+        'authors.*.lastname.required'   => 'Lastname is required.',
         'regex'                         => 'Only (A-Z a-z) characters.',
-        'title.required'                => 'Title required.',
-        'month.required'                => 'Month required.',
-        'year.required'                 => 'Year required.',
-        'college.required'              => 'College required.',
-        'program.required'              => 'Program required.',
-        'subject.required'              => 'Subject required.',
-        'abstract.required'             => 'Abstract required.',
+        'title.required'                => 'Title is required.',
+        'month.required'                => 'Month is required.',
+        'year.required'                 => 'Year is required.',
+        'college.required'              => 'College is required.',
+        'program.required'              => 'Program is required.',
+        'subject.required'              => 'Subject/s is required.',
+        'abstract.required'             => 'Abstract is required.',
+        'placeOfPublication.required'   => 'Place of Pulication is required.',
+        'publisher.required'            => 'Publisher is required.'
         // 'file.min'                      => 'The file must be at least 1MB.',
         // 'file.max'                      => 'The file size exceeded to 16MB.',
         // 'accession.numeric'             => 'Field must only contain numeric value'
@@ -125,9 +130,9 @@ class ThesisForm extends Component
         // if($this->month == 2 && ($year % 400 == 0 || $year % 4 == 0)){
         //     $this->days = collect()->range(1,29);
         // }
-        $names = array_map( fn($name) => $name['lastname'] . ", ". substr($name['firstname'], 0, 1), $this->authors );
+        $names = array_map( fn($name) => $name['lastname'] . ", ". substr($name['firstname'], 0, 1) .".", $this->authors );
 
-        $this->citation = implode(', ', $names). " (" . $this->year ."). " . $this->title;
+        $this->citation = implode(', ', $names). " (" . $this->year ."). " . $this->title .". " .$this->placeOfPublication. ": ". $this->publisher.".";
     }
 
     public function validateUserSubmission()
@@ -140,16 +145,22 @@ class ThesisForm extends Component
     }
 
     public function updatedAuthors(){
-        $names = array_map( fn($name) => $name['lastname'] . ", ". substr($name['firstname'], 0, 1), $this->authors );
+        $names = array_map( fn($name) => $name['lastname'] . ", ". substr($name['firstname'], 0, 1) .".", $this->authors );
 
-        $this->citation = implode(', ', $names). " (" . $this->year ."). " . $this->title;
+        $this->citation = implode(', ', $names). " (" . $this->year ."). " . $this->title.". " .$this->placeOfPublication. ": ". $this->publisher.".";
         
     }
 
     public function updatedTitle(){
-        $names = array_map( fn($name) => $name['lastname'] . ", ". substr($name['firstname'], 0, 1), $this->authors );
+        $names = array_map( fn($name) => $name['lastname'] . ", ". substr($name['firstname'], 0, 1) .".", $this->authors );
 
-        $this->citation = implode(', ', $names). " (" . $this->year .") " . $this->title;
+        $this->citation = implode(', ', $names). " (" . $this->year .") " . $this->title .". ".$this->placeOfPublication. ": ". $this->publisher.".";
+    }
+
+    public function updatedPlaceOfPublication(){
+        $names = array_map( fn($name) => $name['lastname'] . ", ". substr($name['firstname'], 0, 1) .".", $this->authors );
+
+        $this->citation = implode(', ', $names). " (" . $this->year .") " . $this->title .". " .$this->placeOfPublication. ": ". $this->publisher.".";
     }
 
     public function addThesis()
@@ -188,6 +199,7 @@ class ThesisForm extends Component
         $thesis = Thesis::create([
             'title'         => $this->title,
             // 'accession_number' => $this->accession,
+            'place_of_publication' => $this->placeOfPublication,
             'user_id'       => auth()->user()->id,
             'publisher'     => $this->publisher,
             'date_of_publication' => $this->publication,

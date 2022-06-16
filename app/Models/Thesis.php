@@ -20,6 +20,7 @@ class Thesis extends Model
     protected $fillable = [
         'title',
         // 'accession_number',
+        'place_of_publication',
         'user_id',
         'publisher',
         'date_of_publication',

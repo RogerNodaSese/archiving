@@ -19,7 +19,8 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             AuthorSeeder::class,
             SubjectSeeder::class,
-            ThesisSeeder::class
+            ThesisSeeder::class,
+            PlaceOfPublicationSeeder::class
         ]);
     }
 }

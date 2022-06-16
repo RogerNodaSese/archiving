@@ -24,7 +24,8 @@
                 @foreach ($thesis->authors as $author)
                     {{$author->last_name}}, {{substr($author->first_name, 0, 1)}};
                 @endforeach
-               <br><b>Publication:</b> {{ \Carbon\Carbon::createFromFormat('Y-m', $thesis->date_of_publication)->format('F Y')}}
+                <br><b>Place of Publication:</b> {{ $thesis->place_of_publication}}
+               <br><b>Publication Date:</b> {{ \Carbon\Carbon::createFromFormat('Y-m', $thesis->date_of_publication)->format('F Y')}}
                <br><b> Abstract:</b> <br> {{\Illuminate\Support\Str::limit($thesis->abstract, 150)}}
                </x-card.text>
         </x-card.body>

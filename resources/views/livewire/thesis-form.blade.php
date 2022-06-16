@@ -68,6 +68,15 @@
           @endforeach
           </div>
           <div class="form-group row mb-2">
+            <label for="inputPassword" class="col-sm-2 col-form-label">Place of Publication</label>
+            <div class="col-sm-8 mb-2">
+              <input type="text" class="form-control @error('placeOfPublication') border border-danger @enderror" wire:model.lazy="placeOfPublication" name="place" id="inputPassword" placeholder="Ex. Quezon City">
+              @error('placeOfPublication')
+                  <small class="text-danger">{{ $message }}</small>
+              @enderror
+            </div>
+          </div>
+          <div class="form-group row mb-2">
             <label for="inputPassword" class="col-sm-2 col-form-label">Publisher</label>
             <div class="col-sm-8 mb-2">
               <input type="text" wire:model="publisher" class="form-control @error('publisher') border border-danger @enderror" wire:model.lazy="publisher" name="publisher" id="inputPassword" placeholder="Ex. New Era University">
@@ -76,8 +85,9 @@
               @enderror
             </div>
           </div>
+          
         <div class="form-group row mb-2">
-            <label for="staticEmail" class="col-sm-2 col-form-label">Date of publication</label>
+            <label for="staticEmail" class="col-sm-2 col-form-label">Publication Date</label>
             <div class="col-sm-4 d-inline mb-2">
                 <select class="custom-select @error('month') border border-danger @enderror" wire:model="month" id="month">
                     <option value="" selected data-default>Month</option>
@@ -141,7 +151,7 @@
             </div>
           </div>
           <div class="form-group row mb-2">
-            <label for="inputPassword" class="col-sm-2 col-form-label">Subject</label>
+            <label for="inputPassword" class="col-sm-2 col-form-label">Subject/s</label>
             <div class="col-sm-8 mb-2">
               <input type="text" class="form-control @error('subject') border border-danger @enderror" wire:model.lazy="subject" name="subject" id="inputPassword" placeholder="Thesis subject">
               @error('subject')
@@ -160,7 +170,7 @@
             </div>
           </div> --}}
           <div class="form-group row mb-2">
-            <label for="inputPassword" class="col-sm-2 col-form-label">Suggested citation</label>
+            <label for="inputPassword" class="col-sm-2 col-form-label">Suggested Citation</label>
             <div class="col-sm-8 mb-2">
               <textarea class="form-control @error('citation') border border-danger @enderror" rows="3" wire:model.lazy="citation" name="citation" id="inputPassword"></textarea>
               @error('citation')

@@ -99,12 +99,30 @@
             </div>
             <div class="col-12 col-md-6 col-lg-6">
                 <div class="d-flex flex-column">
-                    <label class="col-12 col-lg-12" for="date">Date of publication:</label>
-                    <p class="col-12 col-lg-12" id="date">{{ $date }}</p>
+                    <label class="col-12 col-lg-12" for="date">Publisher:</label>
+                    <p class="col-12 col-lg-12" id="date">{{ $thesis->publisher }}</p>
                 </div>
             </div>
         </div>
         
+        <div class="d-flex flex-row mt-4">
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="d-flex flex-column">
+                    <label class="col-12 col-lg-12" for="abs">Publication Date</label>
+                    <div class="col-12 col-lg-12">
+                        <p class="lead text-justify" id="abs">{{$date}}</p>           
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-6">
+                <div class="d-flex flex-column">
+                    <label class="col-12 col-lg-12" for="abs">Place of Publication</label>
+                    <div class="col-12 col-lg-12">
+                        <p class="lead text-justify" id="abs">{{$thesis->place_of_publication}}</p>           
+                    </div>
+                </div>
+            </div>
+        </div>
         
         <div class="d-flex flex-row mt-4">
             <div class="col-12 col-md-6 col-lg-6">
@@ -115,7 +133,7 @@
             </div>
             <div class="col-12 col-md-6 col-lg-6">
                 <div class="d-flex flex-column">
-                    <label class="col-12 col-lg-12" for="program">College Program:</label>
+                    <label class="col-12 col-lg-12" for="program">Program:</label>
                     <p class="col-12 col-lg-12" id="program">{{$thesis->program->description}}</p>
                 </div>
             </div>
@@ -209,25 +227,18 @@
             </div>
         </div>
         @endif --}}
-        
+
         <div class="d-flex flex-row mt-4">
-            <div class="col-12 col-md-6 col-lg-6">
+            <div class="col-12 col-md-12 col-lg-12">
                 <div class="d-flex flex-column">
-                    <label class="col-12 col-lg-12" for="abs">Suggested citation:</label>
+                    <label class="col-12 col-lg-12" for="abs">Suggested Citation:</label>
                     <div class="col-12 col-lg-12">
                         <p class="lead text-justify" id="abs">{{$thesis->citation}}</p>           
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-md-6 col-lg-6">
-                <div class="d-flex flex-column">
-                    <label class="col-12 col-lg-12" for="abs">Publisher</label>
-                    <div class="col-12 col-lg-12">
-                        <p class="lead text-justify" id="abs">{{$thesis->publisher}}</p>           
-                    </div>
-                </div>
-            </div>
         </div>
+
         <div class="d-flex flex-row mt-4">
             <div class="col-12 col-md-12 col-lg-12">
                 <div class="d-flex flex-column">
