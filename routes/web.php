@@ -22,6 +22,8 @@ use Maatwebsite\Excel\Facades\Excel;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+
 Route::get('/', [LoginController::class, 'index'])->middleware('guest');
 Route::post('/', LoginController::class)->name('login');
 // Route::get('/test', function(){
@@ -80,8 +82,22 @@ Route::group(['middleware' => ['auth','verified']], function(){
         Route::get('/thesis/create', function(){
             return view('library.form.thesis');
         })->name('thesis.create');
-    });
 
+        Route::get('/thesis/edit/{id}', function($id){
+            $thesis = App\Models\Thesis::with(['program' => function($query){
+                $query->with('college');
+            },'authors', 'subjects' => function($query){
+                $query->select('id','description');
+            }])->find($id);
+            return view('library.form.edit-thesis')->with('thesis', $thesis);
+        })->name('thesis.edit');
+    });
+    Route::group(['middleware' => 'role:student,admin,staff', 'as' => 'account.'], function(){
+        
+        Route::get('/account', function(){
+            return view('auth.change-password');
+        })->name('change-pass');
+    });
     //Routes for Student
     Route::group(['middleware' => 'role:student,admin,staff', 'prefix' => 'archives', 'as' => 'student.'], function(){
         Route::get('/', [StudentController::class , 'index'])->name('index');
@@ -257,11 +273,12 @@ Route::group(['middleware' => ['auth','verified']], function(){
             $thesis = \App\Models\Thesis::with('file','program')->findOrFail($id);
             if(auth()->user()->isAdministrator())
             {
-                $path = $thesis->file->path;
-
-                if(!\Illuminate\Support\Facades\Storage::disk('google')->exists($path)){
+                $path = $thesis->file->path ?? NULL;
+                
+                if(!\Illuminate\Support\Facades\Storage::disk('google')->exists($path) || is_null($path)){
                    abort(404);
                 }
+
 
                 return Response::make(file_get_contents(\Illuminate\Support\Facades\Storage::disk('google')->url($path)), 200, [
                     'Content-Type' => 'application/pdf',

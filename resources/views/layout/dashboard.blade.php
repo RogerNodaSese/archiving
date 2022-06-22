@@ -17,16 +17,19 @@
         <div class="content card p-5 my-1" style="border-radius: 20px;box-shadow:3px 4px #808080;background:#FFF5EE">
             <div class="row">
             @yield('header') 
-            <div class="col-md-2 col-lg-2 ml-auto" style="">
+            <div class="col-md-4 col-lg-4 ml-auto" style="">
                 @if (auth()->user()->role_id == \App\Models\Role::ADMIN || auth()->user()->role_id == \App\Models\Role::STAFF)
                     @if(\Request::routeIs('student.*') && !(\Request::routeIs('student.colleges') || \Request::routeIs('student.programs')))
-                        <a href="{{route('library.thesis.create')}}" class="btn btn-success" id="inputPassword">Create Archive</a>
+                        <a href="{{route('library.thesis.create')}}" class="btn btn-success float-right" id="inputPassword">Create Archive</a>
                     @elseif(\Request::routeIs('student.colleges'))
-                        <a href="{{route('library.college.create')}}" class="btn btn-success" id="inputPassword">+ Add College</a>
+                        <a href="{{route('library.college.create')}}" class="btn btn-success float-right" id="inputPassword">+ Add College</a>
                     @elseif(\Request::routeIs('student.programs'))
-                        <a href="{{route('program.create')}}" class="btn btn-success" id="inputPassword">+ Add Programs</a>
+                        <a href="{{route('program.create')}}" class="btn btn-success float-right" id="inputPassword">+ Add Programs</a>
                     @elseif(\Request::routeIs('library.staff-activity'))
-                        <a href="{{route('library.staff.create')}}" class="btn btn-success" id="inputPassword">+ Add Staff</a>
+                        <a href="{{route('library.staff.create')}}" class="btn btn-success float-right" id="inputPassword">+ Add Staff</a>
+                    @endif
+                    @if(\Request::routeIs('student.archive'))
+                        @yield('edit')
                     @endif
                 @endif
                 @if (auth()->user()->role_id == \App\Models\Role::ADMIN)

@@ -174,6 +174,16 @@
 
 <p class="font-weight-bold text-uppercase px-3 small pb-4 mb-0 mt-3 section">Action</p>
 
+<ul class="nav flex-column bg-white mb-0">
+    <li class="nav-item">
+        <a href="{{route('account.change-pass')}}" class="nav-link  @if(\Request::routeIs('account.change-pass'))bg-info text-white @else text-dark bg-light @endif">
+            <span class="material-icons">
+                account_circle
+            </span>
+            <small>Account</small>
+        </a>
+    </li>
+</ul>
 <form action="{{ route('logout') }}" method="POST">
     @csrf
 <ul class="nav flex-column bg-white mb-0">

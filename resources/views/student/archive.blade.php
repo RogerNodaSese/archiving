@@ -7,6 +7,9 @@
 @endif
 @endsection
 
+@section('edit')
+    <a href="{{route('library.thesis.edit', [$thesis->id])}}" class="btn btn-primary float-right mr-2" id="inputPassword">Edit Archive</a>
+@endsection
 @push('styles')
     <style>
         .added-by{
@@ -70,7 +73,7 @@
 @section('breadcrumbs')
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        @if(url()->previous() == route('student.program',[$college->slug,$program->slug]) || url()->previous() == url()->current())
+        @if(url()->previous() == route('student.program',[$college->slug,$program->slug]) || url()->previous() == url()->current() || url()->previous() == route('library.thesis.edit', [$thesis->id]))
             <li class="breadcrumb-item"><a href="/archives">Archives</a></li>
             <li class="breadcrumb-item"><a href="/archives/{{$college->slug}}">{{$college->description}}</a></li>
             <li class="breadcrumb-item"><a href="/archives/{{$college->slug}}/{{$program->slug}}">{{$program->description}}</a></li>

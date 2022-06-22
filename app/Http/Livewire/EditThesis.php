@@ -3,7 +3,6 @@
 namespace App\Http\Livewire;
 
 use Livewire\Component;
-use Livewire\WithFileUploads;
 use Carbon\Carbon;
 use App\Rules\WordCount;
 use Illuminate\Support\Str;
@@ -16,15 +15,11 @@ use App\Models\Keyword;
 use App\Models\Subject;
 use App\Models\Author;
 use App\Models\Program;
-use App\Models\File;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 
-class ThesisForm extends Component
+class EditThesis extends Component
 {
-    use WithFileUploads;
-
-    // public $accession;
+    public $thesis;
     public $authors = [];
     public $title;
     public $month;
@@ -41,21 +36,18 @@ class ThesisForm extends Component
     public $programs = [];
     public $program;
     public $subject;
+    public $subjects = [];
     // public $keyword;
     public $citation;
     public $abstract;
-    public $file;
-    // private $keyId;
     private $subId;
-    private $titleSlug;
-    private $data_path;
     private $authorId;
 
     protected function rules(){ 
         return [
         'authors.*.lastname'    => 'required|regex:/^[a-zA-Z\s]*$/',
         'authors.*.firstname'   => 'required|regex:/^[a-zA-Z\s]*$/',
-        'title'                 => 'required|unique:theses',
+        'title'                 => 'required|unique:theses,title,'.$this->thesis->id,
         'month'                 => 'required',
         'year'                  => 'required',
         'college'               => 'required',
@@ -63,10 +55,8 @@ class ThesisForm extends Component
         'subject'               => 'required',
         'citation'              => ['required'],
         'abstract'              => ['required'],
-        'file'                  => 'nullable|file|mimes:pdf',
         'placeOfPublication'    => 'required',
-        'publisher'             => 'required'
-        // 'accession'             => 'required|numeric|unique:theses,accession_number'
+        'publisher'             => 'required',
         ];
     }
 
@@ -82,50 +72,32 @@ class ThesisForm extends Component
         'subject.required'              => 'Subject/s is required.',
         'abstract.required'             => 'Abstract is required.',
         'placeOfPublication.required'   => 'Place of Pulication is required.',
-        'publisher.required'            => 'Publisher is required.'
-        // 'file.min'                      => 'The file must be at least 1MB.',
-        // 'file.max'                      => 'The file size exceeded to 16MB.',
-        // 'accession.numeric'             => 'Field must only contain numeric value'
+        'publisher.required'            => 'Publisher is required.',
     ];
-    public function mount()
+
+    public function mount($thesis)
     {
-        $this->pdf = collect();
-        $this->authors = [
-            ['lastname' => '' , 'firstname' => '', 'middlename' => ''],
-        ];
+        $this->thesis = $thesis;
+        $this->loadAuthors();
+        array_map(function($subject){
+            array_push($this->subjects ,$subject["description"]);
+        }, $this->thesis->subjects->toArray());
+        $this->subject = implode(",",$this->subjects);
+        $this->citation = $this->thesis->citation;
+        $dateOfPublication = explode("-", $this->thesis->date_of_publication);
+        $this->year = $dateOfPublication[0];
+        $this->month = ltrim($dateOfPublication[1], "0");
+        $this->publisher = $this->thesis->publisher;
+        $this->placeOfPublication = $this->thesis->place_of_publication;
+        $this->title = $this->thesis->title;
         $this->months = Date::months();
         $this->years = Date::years();
-        // $this->days = Date::days();
+        $this->college = $this->thesis->program->college_id;
+        $this->program = $this->thesis->program->id;
+        $this->programs = College::find($this->college)->programs;
         $this->colleges = College::select('id','description')->get();
-        // $this->authorizedUser();
+        $this->abstract = $this->thesis->abstract;
     }
-
-    public function authorizedUser()
-    {
-        if(auth()->user()->isStaff())
-        {
-            $this->college = strval(User::find(auth()->user()->id)->college->id);
-            $this->programs = College::find($this->college)->programs;
-        }
-    }
-
-    public function updatedCollege($college)
-    {
-        // if(!empty($college))
-        // {
-        //     return $this->programs = College::find($college)->programs;
-        // }
-        // return $this->programs = collect([]);
-        return $this->programs = (!empty($college)) ? College::find($college)->programs : collect([]);
-    }
-
-    // public function updatedMonth($month){
-        // if(!empty($month)){
-        //     $this->days = Date::days($month);
-        // }
-
-    //     return $this->days = (!empty($month)) ? Date::days($month) : collect([]);
-    // }
 
     public function updatedYear($year){
         // if($this->month == 2 && ($year % 400 == 0 || $year % 4 == 0)){
@@ -149,58 +121,71 @@ class ThesisForm extends Component
         $this->citation = implode(', ', $names). " (" . $this->year .") " . $this->title .". ".$this->placeOfPublication. ": ". $this->publisher.".";
     }
 
+    public function updatedPublisher(){
+        $names = array_map( fn($name) => $name['lastname'] . ", ". substr($name['firstname'], 0, 1) .".", $this->authors );
+
+        $this->citation = implode(', ', $names). " (" . $this->year .") " . $this->title .". ".$this->placeOfPublication. ": ". $this->publisher.".";
+    }
+
     public function updatedPlaceOfPublication(){
         $names = array_map( fn($name) => $name['lastname'] . ", ". substr($name['firstname'], 0, 1) .".", $this->authors );
 
         $this->citation = implode(', ', $names). " (" . $this->year .") " . $this->title .". " .$this->placeOfPublication. ": ". $this->publisher.".";
     }
 
-    public function addThesis()
-    {   
-        // Storage::disk('google')->makeDirectory('archives');
-        // $this->file->store('','google');
-
-        
-        // if($this->validateUserSubmission())
+    public function updatedCollege($college)
+    {
+        // if(!empty($college))
         // {
-        //     return redirect()->route('thesis.create')->with('message', 'Request Error');
-        // };
-        //Validate data
-        
+        //     return $this->programs = College::find($college)->programs;
+        // }
+        // return $this->programs = collect([]);
+        return $this->programs = (!empty($college)) ? College::find($college)->programs : collect([]);
+    }
+    public function loadAuthors()
+    {
+        foreach($this->thesis->authors as $author)
+        {
+            $this->authors[] = ['lastname' => $author->last_name , 'firstname' => $author->first_name, 'middlename' => $author->middle_name];
+        }
+    }
 
-        sleep(1);
+    public function addAuthor()
+    {
+        $this->authors[] = ['lastname' => '' , 'firstname' => '', 'middlename' => ''];
+    }
+
+    public function removeAuthor($index)
+    {
+        unset($this->authors[$index]);
+        $this->authors = array_values($this->authors);
+
+        $names = array_map( fn($name) => $name['lastname'] . ", ". substr($name['firstname'], 0, 1), $this->authors );
+
+        $this->citation = implode(', ', $names). " (" . $this->year ."). " . $this->title;
+    }
+
+    public function updateThesis()
+    {
         $this->validate();
-        // $this->keyId = [];
+
         $this->subId = [];
         $this->authorId = [];
         // $keywords = explode(',' , $this->keyword);
         $subjects = explode(',' , $this->subject);
         $this->publication = Str::slug($this->year." ".$this->month, "-");
         DB::transaction(function () use($subjects) {
-        
-            $file;
-            if(!is_null($this->file)){
-                $this->file->storeAs(Program::find($this->program)->directory->path,Str::slug($this->title." ".$this->month." ".$this->year),'google');
 
-            $file = File::create([
-                'description' => Str::slug($this->title." ".$this->month." ".$this->year),
-                'path'        => $this->fileDirectory()
-            ]);
-
-            }
-
-        $thesis = Thesis::create([
-            'title'         => $this->title,
-            // 'accession_number' => $this->accession,
-            'place_of_publication' => $this->placeOfPublication,
-            'user_id'       => auth()->user()->id,
-            'publisher'     => $this->publisher,
-            'date_of_publication' => $this->publication,
-            'citation'      => $this->citation,
-            'abstract'      => $this->abstract,
-            'program_id'    => $this->program,
-            'file_id'       => $file->id ?? NULL,
-        ]);
+        $updateThesis = Thesis::where('id', $this->thesis->id)
+                                ->update([
+                                    'title' => $this->title,
+                                    'place_of_publication' => $this->placeOfPublication,
+                                    'publisher'     => $this->publisher,
+                                    'date_of_publication' => $this->publication,
+                                    'citation'      => $this->citation,
+                                    'abstract'      => $this->abstract,
+                                    'program_id'    => $this->program,
+                                ]);
 
         // foreach($keywords as $data)
         // {
@@ -221,24 +206,26 @@ class ThesisForm extends Component
 
         foreach($this->authors as $data)
         {
+
             $authorResult = Author::where([
-                ['first_name', '=', $data['firstname']],
-                ['last_name', '=', $data['lastname']],
-                ['middle_name', '=', $data['middlename']],
+                                    ['first_name', '=', $data['firstname']],
+                                    ['last_name', '=', $data['lastname']],
+                                    ['middle_name', '=', $data['middlename']],
             ])->first();
-            
+
             if(is_null($authorResult)){
                 $author = new Author();
                 $author->first_name = $data['firstname'];
                 $author->last_name = $data['lastname'];
                 $author->middle_name = $data['middlename'];
-                $thesis->authors()->save($author);
+                $this->thesis->authors()->save($author);
                 array_push($this->authorId, $author->id);
             }else{
                 array_push($this->authorId, $authorResult->id);
             }
         }
-
+        $this->thesis->authors()->sync($this->authorId);
+        Author::doesntHave('theses')->delete();
         foreach ($subjects as $data) {
 
             $subResult = Subject::where('description', '=', Str::of(Str::lower($data))->trim())->first();
@@ -246,14 +233,15 @@ class ThesisForm extends Component
             {
                 $subject = new Subject();
                 $subject->description = Str::of($data)->trim();
-                $thesis->subjects()->save($subject);
+                $this->thesis->subjects()->save($subject);
                 array_push($this->subId, $subject->id);
             }else
             {
                 array_push($this->subId, $subResult->id);
             }
         }
-        $thesis->subjects()->sync($this->subId);
+        $this->thesis->subjects()->sync($this->subId);
+        Subject::doesntHave('theses')->delete();
         },3);
 
         // $thesis->publisher = "HEY";
@@ -266,70 +254,12 @@ class ThesisForm extends Component
         // return redirect()->route('thesis.create');
         $this->dispatchBrowserEvent('toastr:created', [
             'icon' => 'success',
-            'title' => 'Created Successfully!',
+            'title' => 'Updated Successfully!',
         ]);
-        $this->resetForm();
-        //Insert metadata to db
-
-        //Attach the thesis to author
-
-        //Return success message 
-    }
-
-    // public function updatedSubject($value)
-    // {
-    //     $slug = \Illuminate\Support\Str::slug($value, '-');
-
-    //     $this->keyword = $slug;
-    // }
-
-    private function fileDirectory()
-    {
-        $storage = Storage::disk('google');
-        $files = $storage->files(Program::find($this->program)->directory->path);
-        foreach($files as $file)
-        {
-            $data = $storage->getAdapter()->getMetadata($file);
-            if(Str::is(Str::lower($data['filename']), Str::lower(Str::slug($this->title." ".$this->month." ".$this->year,'-'))))
-            {
-                return $data['path'];
-            }
-        }
-    }
-
-
-    public function resetForm()
-    {
-        
-        if(auth()->user()->isAdministrator())
-        {
-            $this->reset(['authors','title','month','year','subject','program','citation','abstract','file']);
-        }else
-        {
-            $this->reset(['authors','title','month','college','year','subject','program','citation','abstract','file']);
-        }
-        $this->authors = [
-            ['lastname' => '' , 'firstname' => ''],
-        ];
-    }
-
-    public function addAuthor()
-    {
-        $this->authors[] = ['lastname' => '' , 'firstname' => '', 'middlename' => ''];
-    }
-
-    public function removeAuthor($index)
-    {
-        unset($this->authors[$index]);
-        $this->authors = array_values($this->authors);
-
-        $names = array_map( fn($name) => $name['lastname'] . ", ". substr($name['firstname'], 0, 1), $this->authors );
-
-        $this->citation = implode(', ', $names). " (" . $this->year ."). " . $this->title;
     }
 
     public function render()
     {
-        return view('livewire.thesis-form');
+        return view('livewire.edit-thesis');
     }
 }
